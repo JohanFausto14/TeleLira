@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.tv.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation ("androidx.cardview:cardview:1.0.0")
 
     // Pruebas y herramientas
     androidTestImplementation(platform(libs.androidx.compose.bom))

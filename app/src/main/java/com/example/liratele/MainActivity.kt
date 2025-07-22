@@ -1,5 +1,6 @@
 package com.example.liratele
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -24,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var token: String
 
     private val loginWebBaseUrl = "https://educacion-lira.vercel.app/mision"
-
     private val apiBaseUrl = "https://api-lira.onrender.com/api"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,8 +85,10 @@ class MainActivity : AppCompatActivity() {
                             if (json.has("nombre")) {
                                 val nombre = json.getString("nombre")
                                 runOnUiThread {
-                                    qrImage.visibility = View.GONE
-                                    statusText.text = "Bienvenido, $nombre"
+                                    val intent = Intent(this@MainActivity, WelcomeActivity::class.java)
+                                    intent.putExtra("nombre", nombre)
+                                    startActivity(intent)
+                                    finish() // Opcional: cierra MainActivity para que no se pueda volver atrás
                                 }
                             } else {
                                 handler.postDelayed(poll, 3000)

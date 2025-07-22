@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">liratele</string>
+    <string name="app_name">LIRA</string>
+    <string name="app_logo">Logo de la aplicación</string>
+    <string name="scan_to_login">Escanea para iniciar sesión</string>
+    <string name="generating_qr">Generando código QR...</string>
+    <string name="scan_instructions">Usa la camara movil de tu smartphone\ny escanea este código para iniciar sesión</string>
+    <string name="welcome_subtitle">Estás listo para comenzar la experiencia</string>
+    <string name="continue_text">Continuar</string>
 </resources>
