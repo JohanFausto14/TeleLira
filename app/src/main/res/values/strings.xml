@@ -6,4 +6,14 @@
     <string name="scan_instructions">Usa la camara movil de tu smartphone\ny escanea este código para iniciar sesión</string>
     <string name="welcome_subtitle">Estás listo para comenzar la experiencia</string>
     <string name="continue_text">Continuar</string>
+
+    <string name="letras_magicas">Letras Mágicas</string>
+    <string name="palabras_voladoras">Palabras Voladoras</string>
+    <string name="cuentos_animados">Cuentos Animados</string>
+    <string name="abecedario_musical">Abecedario Musical</string>
+    <string name="rimas_divertidas">Rimas Divertidas</string>
+
+    <string name="profile_description">Perfil de usuario</string>
+    <string name="game_letters">Letras Mágicas</string>
+    <!-- Agrega los demás strings necesarios -->
 </resources>

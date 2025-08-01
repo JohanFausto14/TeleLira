@@ -51,29 +51,35 @@ android {
         }
     }
 }
-
 dependencies {
-    // Android y Compose
+    // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
+
+    // TV Components
     implementation(libs.androidx.tv.foundation)
     implementation(libs.androidx.tv.material)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.tv:tv-material:1.0.0")
 
-    // Pruebas y herramientas
+    // QR y Networking (existente)
+    implementation("com.google.zxing:core:3.5.2")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+    // Views tradicionales (para compatibilidad)
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+
+    // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    // 🔳 QR code
-    implementation("com.google.zxing:core:3.5.2")
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-
-    // 🌐 HTTP Client
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
 }

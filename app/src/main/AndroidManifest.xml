@@ -17,17 +17,34 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Liratele">
-        <activity android:name=".WelcomeActivity" />
+
+        <!-- Actividad de Bienvenida -->
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+
+        <activity android:name=".LetrasMagicasActivity"/>
+        <activity android:name=".FormarPalabrasActivity"/>
+        <activity android:name=".CuentosDivertidosActivity"/>
+        <activity android:name=".DesafiosLiraActivity"/>
+        <activity android:name=".ProximamenteActivity"/>
+
+
+        <!-- Menú Principal -->
+        <activity
+            android:name=".MainMenuActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Liratele"/>
+
+        <!-- Actividad Principal (con QR) -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
