@@ -50,7 +50,7 @@ class MainMenuActivity : AppCompatActivity() {
 
         // Navegación a cada actividad
         game1.setOnClickListener {
-            startActivity(Intent(this, LetrasMagicasActivity::class.java))
+            startActivity(Intent(this, SeleccionDificultadActivity::class.java))
         }
 
         game2.setOnClickListener {

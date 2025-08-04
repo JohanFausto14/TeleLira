@@ -3,23 +3,27 @@ package com.example.liratele
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.liratele.ApiConfig.API_BASE_URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
-import com.example.liratele.ApiConfig.API_BASE_URL
 
+class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
-class JuegoVocalesActivity : AppCompatActivity() {
     private lateinit var tts: TextToSpeech
     private lateinit var imgEmoji: TextView
     private lateinit var txtNombre: TextView
     private lateinit var layoutOpciones: LinearLayout
     private lateinit var txtPuntos: TextView
-    private lateinit var layoutFeedback: TextView
+    private lateinit var txtFeedback: TextView
     private lateinit var btnVolver: Button
 
     data class Item(val nombre: String, val emoji: String, val vocal: String)
@@ -31,7 +35,6 @@ class JuegoVocalesActivity : AppCompatActivity() {
         Item("Oso", "🐻", "O"),
         Item("Avión", "✈", "A")
     )
-
     private val itemsMedio = listOf(
         Item("Armadillo", "🦫", "A"),
         Item("Erizo", "🦔", "E"),
@@ -39,7 +42,6 @@ class JuegoVocalesActivity : AppCompatActivity() {
         Item("Ornitorrinco", "🦫", "O"),
         Item("Unicornio", "🦄", "U")
     )
-
     private val itemsDificil = listOf(
         Item("Aguacate", "🥑", "A"),
         Item("Escorpión", "🦂", "E"),
@@ -52,48 +54,44 @@ class JuegoVocalesActivity : AppCompatActivity() {
     private var puntos = 0
     private var preguntaActual = 0
     private lateinit var itemActual: Item
-    private var itemsUsados = mutableSetOf<String>()
+    private val itemsUsados = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_juego_vocales)
 
         dificultad = intent.getIntExtra("dificultad", 1)
-
         imgEmoji = findViewById(R.id.imgEmoji)
         txtNombre = findViewById(R.id.txtNombre)
         layoutOpciones = findViewById(R.id.layoutOpciones)
         txtPuntos = findViewById(R.id.txtPuntos)
-        layoutFeedback = findViewById(R.id.txtFeedback)
+        txtFeedback = findViewById(R.id.txtFeedback)
         btnVolver = findViewById(R.id.btnVolver)
+        btnVolver.setOnClickListener { finish() }
 
-        tts = TextToSpeech(this) {
-            if (it == TextToSpeech.SUCCESS) {
-                tts.language = Locale("es", "ES")
-            }
-        }
+        tts = TextToSpeech(this, this)
+        mostrarPreguntaInicial()
+    }
 
-        btnVolver.setOnClickListener {
-            finish()
-        }
-
+    private fun mostrarPreguntaInicial() {
         iniciarPregunta()
     }
 
     private fun iniciarPregunta() {
-        val itemsDisponibles = getItemsPorNivel().filterNot { itemsUsados.contains(it.nombre) }
+        val disponibles = getItemsPorNivel().filterNot { itemsUsados.contains(it.nombre) }
 
-        if (itemsDisponibles.isEmpty() || preguntaActual >= getPreguntasPorNivel()) {
+        if (disponibles.isEmpty() || preguntaActual >= getPreguntasPorNivel()) {
             guardarProgreso()
-            mostrarFinJuego()
+            mostrarFin()
             return
         }
 
-        layoutFeedback.text = ""
+        txtFeedback.text = ""
+        txtFeedback.visibility = View.INVISIBLE
         layoutOpciones.removeAllViews()
         preguntaActual++
 
-        itemActual = itemsDisponibles.random()
+        itemActual = disponibles.random()
         itemsUsados.add(itemActual.nombre)
 
         imgEmoji.text = itemActual.emoji
@@ -102,104 +100,91 @@ class JuegoVocalesActivity : AppCompatActivity() {
         tts.speak(itemActual.nombre, TextToSpeech.QUEUE_FLUSH, null, null)
 
         val opciones = generarOpciones(itemActual.vocal).shuffled()
-        for (vocal in opciones) {
+        opciones.forEach { vocal ->
             val btn = Button(this).apply {
                 text = vocal
                 textSize = 24f
-                setOnClickListener { verificarRespuesta(vocal) }
+                setOnClickListener { verificarRespuesta(vocal, this) }
             }
             layoutOpciones.addView(btn)
         }
-
         txtPuntos.text = "⭐ Puntos: $puntos"
     }
 
-    private fun verificarRespuesta(vocal: String) {
+    private fun verificarRespuesta(vocal: String, btn: Button) {
         if (vocal == itemActual.vocal) {
             puntos += dificultad * 20
-            layoutFeedback.text = "✅ ¡Correcto!"
+            txtFeedback.text = "✅ ¡Correcto! +${dificultad * 20}"
         } else {
-            layoutFeedback.text = "❌ Era: ${itemActual.vocal}"
+            txtFeedback.text = "❌ Era: ${itemActual.vocal}"
         }
-
-        layoutFeedback.visibility = View.VISIBLE
-
-        layoutOpciones.postDelayed({
-            iniciarPregunta()
-        }, 1500)
+        txtFeedback.visibility = View.VISIBLE
+        btn.postDelayed({ iniciarPregunta() }, 1500)
     }
 
     private fun generarOpciones(correcta: String): List<String> {
         val todas = listOf("A", "E", "I", "O", "U")
-        return listOf(
-            correcta,
-            todas.random(),
-            todas.random(),
-            todas.random()
-        )
+        return (listOf(correcta) + todas.shuffled().filter { it != correcta }.take(3)).shuffled()
     }
 
     private fun getItemsPorNivel(): List<Item> = when (dificultad) {
         1 -> itemsFacil
         2 -> itemsMedio
-        3 -> itemsDificil
-        else -> itemsFacil
+        else -> itemsDificil
     }
 
     private fun getPreguntasPorNivel(): Int = when (dificultad) {
         1 -> 5
         2 -> 7
-        3 -> 10
-        else -> 5
+        else -> 10
     }
 
     private fun guardarProgreso() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val childId = getSharedPreferences("prefs", MODE_PRIVATE).getString("id_niño", null)
-                val token = getSharedPreferences("prefs", MODE_PRIVATE).getString("Token", null)
+                val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+                val childId = prefs.getString("id_niño", null)
+                val token = prefs.getString("Token", null)
                 if (childId != null && token != null) {
                     val json = """
                         {
-                          "childId": "$childId",
-                          "gameData": {
-                            "gameName": "VocalesJuego",
-                            "points": $puntos,
-                            "levelsCompleted": $preguntaActual,
-                            "highestDifficulty": "${getDificultadNombre()}",
-                            "lastPlayed": "${Date()}"
+                          "childId":"$childId",
+                          "gameData":{
+                            "gameName":"VocalesJuego",
+                            "points":$puntos,
+                            "levelsCompleted":$preguntaActual,
+                            "highestDifficulty":"${if(dificultad==1) "fácil" else if(dificultad==2) "medio" else "difícil"}",
+                            "lastPlayed":"${Date()}"
                           },
-                          "totalPoints": $puntos
+                          "totalPoints":$puntos
                         }
                     """.trimIndent()
-
-                    val url = java.net.URL("${API_BASE_URL}/child-progress")
-                    val conn = url.openConnection() as java.net.HttpURLConnection
-                    conn.requestMethod = "POST"
-                    conn.setRequestProperty("Authorization", "Bearer $token")
-                    conn.setRequestProperty("Content-Type", "application/json")
-                    conn.doOutput = true
-                    conn.outputStream.write(json.toByteArray())
-                    conn.outputStream.flush()
-                    conn.inputStream.close()
+                    val url = URL("$API_BASE_URL/child-progress")
+                    (url.openConnection() as HttpURLConnection).apply {
+                        requestMethod = "POST"
+                        setRequestProperty("Authorization", "Bearer $token")
+                        setRequestProperty("Content-Type", "application/json")
+                        doOutput = true
+                        outputStream.write(json.toByteArray())
+                        outputStream.flush()
+                        inputStream.close()
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } catch (_: Exception) { /* ignora fallos durante desarrollo */ }
         }
     }
 
-    private fun getDificultadNombre(): String = when (dificultad) {
-        1 -> "fácil"
-        2 -> "medio"
-        3 -> "difícil"
-        else -> "fácil"
+    private fun mostrarFin() {
+        runOnUiThread {
+            txtFeedback.text = "Juego terminado\nPuntos: $puntos"
+            txtFeedback.visibility = View.VISIBLE
+            btnVolver.visibility = View.VISIBLE
+        }
     }
 
-    private fun mostrarFinJuego() {
-        runOnUiThread {
-            Toast.makeText(this, "Juego terminado. Puntos: $puntos", Toast.LENGTH_LONG).show()
-            btnVolver.visibility = View.VISIBLE
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            tts.language = Locale("es", "ES")
         }
     }
 

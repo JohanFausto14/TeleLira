@@ -23,12 +23,15 @@
             android:name=".WelcomeActivity"
             android:exported="false" />
 
-        <activity android:name=".LetrasMagicasActivity"/>
+        <!-- Actividades del menú -->
+        <activity android:name=".JuegoVocalesActivity" />
         <activity android:name=".FormarPalabrasActivity"/>
         <activity android:name=".CuentosDivertidosActivity"/>
         <activity android:name=".DesafiosLiraActivity"/>
         <activity android:name=".ProximamenteActivity"/>
 
+        <!-- 🔧 AGREGA ESTA LÍNEA -->
+        <activity android:name=".SeleccionDificultadActivity" />
 
         <!-- Menú Principal -->
         <activity
@@ -47,4 +50,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

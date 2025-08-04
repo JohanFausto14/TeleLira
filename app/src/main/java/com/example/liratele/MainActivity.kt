@@ -57,6 +57,17 @@ class MainActivity : AppCompatActivity() {
         return bmp
     }
 
+    fun finalizarJuego() {
+        // Más adelante aquí podrías guardar el progreso...
+
+        // Ir al menú principal
+        val intent = Intent(this, MainMenuActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
+
     private fun startPolling() {
         val handler = Handler(Looper.getMainLooper())
 
