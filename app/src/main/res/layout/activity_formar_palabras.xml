@@ -1,16 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/formar_palabra_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="#000000">
+    android:padding="16dp"
+    android:background="#E3F2FD">
 
     <TextView
+        android:id="@+id/instruccion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¡Bienvenido a Formar Palabras!"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF" />
-</LinearLayout>
+        android:text="Ordena las letras para formar la palabra"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textColor="#000"/>
+
+    <LinearLayout
+        android:id="@+id/letrasDesordenadas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/instruccion"
+        android:layout_marginTop="30dp"
+        android:gravity="center"/>
+
+    <LinearLayout
+        android:id="@+id/zonaRespuesta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/letrasDesordenadas"
+        android:layout_marginTop="50dp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/verificarBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verificar"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/zonaRespuesta"
+        android:layout_marginTop="40dp" />
+</RelativeLayout>

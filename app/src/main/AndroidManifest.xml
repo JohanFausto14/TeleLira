@@ -24,7 +24,7 @@
             android:exported="false" />
 
         <!-- Actividades del menú -->
-        <activity android:name=".JuegoVocalesActivity" />
+        <activity android:name=".JuegoVocalesActivity"/>
         <activity android:name=".FormarPalabrasActivity"/>
         <activity android:name=".CuentosDivertidosActivity"/>
         <activity android:name=".DesafiosLiraActivity"/>
