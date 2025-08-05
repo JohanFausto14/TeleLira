@@ -1,45 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/formar_palabra_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp"
-    android:background="#E3F2FD">
+    android:background="#FFF3E0"> <!-- Fondo naranja claro -->
 
     <TextView
-        android:id="@+id/instruccion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ordena las letras para formar la palabra"
-        android:textSize="18sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:textColor="#000"/>
-
-    <LinearLayout
-        android:id="@+id/letrasDesordenadas"
+        android:id="@+id/hintText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/instruccion"
-        android:layout_marginTop="30dp"
-        android:gravity="center"/>
+        android:layout_marginBottom="16dp"
+        android:background="#5D4037"
+    android:padding="8dp"
+    android:textColor="#FFFFFF"
+    android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Arrastra las letras para formar la palabra:"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
 
     <LinearLayout
         android:id="@+id/zonaRespuesta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/letrasDesordenadas"
-        android:layout_marginTop="50dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        android:padding="8dp"/>
 
-    <Button
-        android:id="@+id/verificarBtn"
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Verificar"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/zonaRespuesta"
-        android:layout_marginTop="40dp" />
-</RelativeLayout>
+        android:text="Letras disponibles:"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/letrasDesordenadas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        android:padding="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reiniciar"
+            android:layout_marginEnd="8dp"
+            android:background="#5D4037"
+        android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/hintButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pista"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="#5D4037"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/verificarBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verificar"
+            android:layout_marginStart="8dp"
+            android:background="#5D4037"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+</LinearLayout>

@@ -2,11 +2,14 @@ package com.example.liratele
 
 import android.content.ClipData
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.DragEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class FormarPalabrasActivity : AppCompatActivity() {
@@ -15,6 +18,14 @@ class FormarPalabrasActivity : AppCompatActivity() {
     private lateinit var letrasDesordenadas: LinearLayout
     private lateinit var zonaRespuesta: LinearLayout
     private lateinit var verificarBtn: Button
+    private lateinit var hintButton: Button
+    private lateinit var resetButton: Button
+    private lateinit var hintText: TextView
+
+    private var showHint = false
+    private val hints = mapOf(
+        "LIRA" to "Instrumento musical de cuerda"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,79 +34,165 @@ class FormarPalabrasActivity : AppCompatActivity() {
         letrasDesordenadas = findViewById(R.id.letrasDesordenadas)
         zonaRespuesta = findViewById(R.id.zonaRespuesta)
         verificarBtn = findViewById(R.id.verificarBtn)
+        hintButton = findViewById(R.id.hintButton)
+        resetButton = findViewById(R.id.resetButton)
+        hintText = findViewById(R.id.hintText)
 
-        val letras = palabraCorrecta.toList().shuffled()
+        setupGame()
 
-        letras.forEach { letra ->
-            val letraView = crearLetraView(letra.toString())
-            letrasDesordenadas.addView(letraView)
+        verificarBtn.setOnClickListener { verificarRespuesta() }
+        hintButton.setOnClickListener { toggleHint() }
+        resetButton.setOnClickListener { resetGame() }
+    }
+
+    private fun setupGame() {
+        letrasDesordenadas.removeAllViews()
+        zonaRespuesta.removeAllViews()
+
+        palabraCorrecta.toList().shuffled().forEach { letra ->
+            letrasDesordenadas.addView(crearLetraView(letra.toString()))
         }
 
-        // Crear espacios vacíos para la respuesta
         for (i in palabraCorrecta.indices) {
-            val espacio = crearEspacioDestino()
-            zonaRespuesta.addView(espacio)
+            zonaRespuesta.addView(crearEspacioDestino())
         }
 
-        verificarBtn.setOnClickListener {
-            verificarRespuesta()
-        }
+        showHint = false
+        hintText.visibility = View.GONE
+        hintText.text = hints[palabraCorrecta]
     }
 
     private fun crearLetraView(letra: String): TextView {
-        val textView = TextView(this)
-        textView.text = letra
-        textView.textSize = 24f
-        textView.setPadding(20, 20, 20, 20)
-        textView.setBackgroundResource(android.R.color.holo_blue_light)
-        textView.setOnLongClickListener {
-            val data = ClipData.newPlainText("", letra)
-            val shadowBuilder = View.DragShadowBuilder(it)
-            it.startDrag(data, shadowBuilder, it, 0)
-            true
+        return TextView(this).apply {
+            text = letra
+            textSize = 36f
+            setPadding(32, 32, 32, 32)
+            setBackgroundColor(Color.parseColor("#FF5722")) // Naranja
+            setTextColor(Color.WHITE)
+
+            setOnLongClickListener { view ->
+                val data = ClipData.newPlainText("letter", letra)
+                val shadowBuilder = View.DragShadowBuilder(view)
+                view.startDragAndDrop(data, shadowBuilder, view, 0)
+                view.visibility = View.INVISIBLE
+                true
+            }
+
+            setOnDragListener { v, event ->
+                when (event.action) {
+                    DragEvent.ACTION_DRAG_STARTED -> true
+                    DragEvent.ACTION_DRAG_ENTERED -> {
+                        setBackgroundColor(Color.parseColor("#FF9800")) // Naranja claro
+                        true
+                    }
+                    DragEvent.ACTION_DRAG_EXITED -> {
+                        setBackgroundColor(Color.parseColor("#FF5722")) // Naranja
+                        true
+                    }
+                    DragEvent.ACTION_DROP -> {
+                        if (v is TextView && v.parent == letrasDesordenadas) {
+                            val originalLetter = v.text.toString()
+                            val draggedLetter = event.clipData.getItemAt(0).text.toString()
+                            v.text = draggedLetter
+                            (event.localState as? TextView)?.text = originalLetter
+                        }
+                        setBackgroundColor(Color.parseColor("#FF5722"))
+                        true
+                    }
+                    DragEvent.ACTION_DRAG_ENDED -> {
+                        setBackgroundColor(Color.parseColor("#FF5722"))
+                        if (!event.result) {
+                            (event.localState as? TextView)?.visibility = View.VISIBLE
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
-        return textView
     }
 
     private fun crearEspacioDestino(): TextView {
-        val espacio = TextView(this)
-        espacio.text = ""
-        espacio.textSize = 24f
-        espacio.setBackgroundResource(android.R.color.darker_gray)
-        espacio.setPadding(20, 20, 20, 20)
+        return TextView(this).apply {
+            text = ""
+            textSize = 36f
+            setPadding(32, 32, 32, 32)
+            setBackgroundColor(Color.parseColor("#9E9E9E")) // Gris
+            setTextColor(Color.BLACK)
 
-        espacio.setOnDragListener { v, event ->
-            when (event.action) {
-                DragEvent.ACTION_DROP -> {
-                    val letraView = event.localState as View
-                    val parent = letraView.parent as ViewGroup
-                    parent.removeView(letraView)
-
-                    (v as TextView).text = (letraView as TextView).text
-                    letraView.visibility = View.GONE
-                    true
+            setOnDragListener { v, event ->
+                when (event.action) {
+                    DragEvent.ACTION_DRAG_STARTED -> true
+                    DragEvent.ACTION_DRAG_ENTERED -> {
+                        setBackgroundColor(Color.parseColor("#BDBDBD")) // Gris claro
+                        true
+                    }
+                    DragEvent.ACTION_DRAG_EXITED -> {
+                        setBackgroundColor(Color.parseColor("#9E9E9E"))
+                        true
+                    }
+                    DragEvent.ACTION_DROP -> {
+                        if (text.isEmpty()) {
+                            text = event.clipData.getItemAt(0).text.toString()
+                            (event.localState as? TextView)?.visibility = View.INVISIBLE
+                        }
+                        setBackgroundColor(Color.parseColor("#9E9E9E"))
+                        true
+                    }
+                    DragEvent.ACTION_DRAG_ENDED -> {
+                        setBackgroundColor(Color.parseColor("#9E9E9E"))
+                        if (!event.result) {
+                            (event.localState as? TextView)?.visibility = View.VISIBLE
+                        }
+                        true
+                    }
+                    else -> false
                 }
-                else -> true
+            }
+
+            setOnClickListener {
+                if (text.isNotEmpty()) {
+                    returnLetterToPool(it as TextView)
+                }
             }
         }
+    }
 
-        return espacio
+    private fun returnLetterToPool(slot: TextView) {
+        val letter = slot.text.toString()
+        slot.text = ""
+
+        for (i in 0 until letrasDesordenadas.childCount) {
+            val view = letrasDesordenadas.getChildAt(i) as TextView
+            if (view.visibility == View.INVISIBLE && view.text == letter) {
+                view.visibility = View.VISIBLE
+                break
+            }
+        }
     }
 
     private fun verificarRespuesta() {
-        val respuesta = StringBuilder()
-        for (i in 0 until zonaRespuesta.childCount) {
-            val letra = (zonaRespuesta.getChildAt(i) as TextView).text.toString()
-            respuesta.append(letra)
-        }
+        val respuesta = StringBuilder().apply {
+            for (i in 0 until zonaRespuesta.childCount) {
+                append((zonaRespuesta.getChildAt(i) as TextView).text.toString())
+            }
+        }.toString()
 
-        if (respuesta.toString() == palabraCorrecta) {
+        if (respuesta == palabraCorrecta) {
             Toast.makeText(this, "¡Correcto!", Toast.LENGTH_SHORT).show()
-            // Regresar al menú
             startActivity(Intent(this, MainMenuActivity::class.java))
             finish()
         } else {
             Toast.makeText(this, "Intenta de nuevo", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun toggleHint() {
+        showHint = !showHint
+        hintText.visibility = if (showHint) View.VISIBLE else View.GONE
+    }
+
+    private fun resetGame() {
+        setupGame()
     }
 }
