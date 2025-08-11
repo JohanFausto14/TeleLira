@@ -93,13 +93,37 @@ class MainActivity : AppCompatActivity() {
 
                         try {
                             val json = JSONObject(responseBody)
-                            if (json.has("nombre")) {
-                                val nombre = json.getString("nombre")
+
+                            if (json.has("user")) {
+                                val userObj = json.getJSONObject("user")
+
+                                val parentId = userObj.optString("_id")           // _id: usuario.parentId
+                                val idUsuario = userObj.optString("id_usuario")   // id_usuario: usuario._id
+                                val correo = userObj.optString("correo")
+                                val role = userObj.optString("role")
+                                val nombre = userObj.optString("nombre")
+                                val idNino = userObj.optString("id_niño")
+
+                                val tokenJwt = json.optString("token")
+
+                                // Guardar en SharedPreferences
+                                val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+                                prefs.edit()
+                                    .putString("parentId", parentId)
+                                    .putString("idUsuario", idUsuario)
+                                    .putString("correo", correo)
+                                    .putString("role", role)
+                                    .putString("nombre", nombre)
+                                    .putString("idNino", idNino)
+                                    .putString("token", tokenJwt)
+                                    .apply()
+
                                 runOnUiThread {
+                                    statusText.text = "Sesión iniciada como $nombre"
                                     val intent = Intent(this@MainActivity, WelcomeActivity::class.java)
                                     intent.putExtra("nombre", nombre)
                                     startActivity(intent)
-                                    finish() // Opcional: cierra MainActivity para que no se pueda volver atrás
+                                    finish()
                                 }
                             } else {
                                 handler.postDelayed(poll, 3000)

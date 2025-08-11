@@ -1,5 +1,13 @@
 <resources>
 
-    <style name="Theme.Liratele" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+    <style name="Theme.Liratele" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Colores principales de tu app -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- Forzar que todos los botones usen tu estilo naranja -->
+        <item name="android:buttonStyle">@style/Widget.App.Button</item>
+    </style>
 
 </resources>

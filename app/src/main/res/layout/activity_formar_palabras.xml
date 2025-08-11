@@ -1,86 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#FFF3E0"> <!-- Fondo naranja claro -->
+    android:background="@color/background_game"
+    android:padding="12dp">
 
-    <TextView
-        android:id="@+id/hintText"
+    <!-- Contenedor principal: lo cambiamos a RelativeLayout para posicionar indicadores -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="#5D4037"
-    android:padding="8dp"
-    android:textColor="#FFFFFF"
-    android:visibility="gone" />
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:background="@drawable/rounded_bg_white_large"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Arrastra las letras para formar la palabra:"
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        <!-- Título centrado arriba -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Forma Palabras"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:layout_marginBottom="6dp"
+            android:layout_alignParentTop="true"/>
 
+        <!-- Nivel debajo del título -->
+        <TextView
+            android:id="@+id/levelText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nivel 1"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:layout_below="@id/titleText"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Indicadores en esquina superior derecha, tamaño pequeño -->
+        <LinearLayout
+            android:id="@+id/indicatorsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/rounded_bg_white"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:layout_margin="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⭐"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="2dp"/>
+
+                <TextView
+                    android:id="@+id/pointsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="11sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/rounded_bg_white"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:layout_margin="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⏱"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="2dp"/>
+
+                <TextView
+                    android:id="@+id/timeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="60s"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="11sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/rounded_bg_white"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:layout_margin="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📊"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="2dp"/>
+
+                <TextView
+                    android:id="@+id/difficultyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fácil"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="11sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Imagen centrada debajo -->
+        <ImageView
+            android:id="@+id/wordImage"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/levelText"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_bg_orange"/>
+
+        <TextView
+            android:id="@+id/hintText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:padding="8dp"
+            android:gravity="center"
+            android:layout_below="@id/wordImage"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tu palabra:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@id/hintText"
+            android:layout_marginBottom="6dp"/>
+
+        <LinearLayout
+            android:id="@+id/zonaRespuesta"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@color/background_game"
+            android:padding="8dp"
+            android:layout_below="@id/hintText"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Letras disponibles:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@id/zonaRespuesta"
+            android:layout_marginBottom="6dp"/>
+
+        <LinearLayout
+            android:id="@+id/letrasDesordenadas"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@android:color/white"
+            android:padding="4dp"
+            android:layout_below="@id/zonaRespuesta"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+    <!-- Botones de acción -->
     <LinearLayout
-        android:id="@+id/zonaRespuesta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginBottom="24dp"
-        android:padding="8dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Letras disponibles:"
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
-
-    <LinearLayout
-        android:id="@+id/letrasDesordenadas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="24dp"
-        android:padding="8dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:layout_marginBottom="8dp"
+        android:weightSum="3"
+        android:paddingHorizontal="12dp">
 
         <Button
             android:id="@+id/resetButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
             android:text="Reiniciar"
+            android:background="@drawable/button_orange_gradient"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
             android:layout_marginEnd="8dp"
-            android:background="#5D4037"
-        android:textColor="#FFFFFF"/>
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium"
+            android:elevation="4dp"/>
 
         <Button
             android:id="@+id/hintButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pista"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="#5D4037"
-            android:textColor="#FFFFFF"/>
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:text="Pista (-20 pts)"
+            android:background="@drawable/button_orange_gradient"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium"
+            android:elevation="4dp"
+            android:layout_marginEnd="8dp"/>
 
         <Button
             android:id="@+id/verificarBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
             android:text="Verificar"
-            android:layout_marginStart="8dp"
-            android:background="#5D4037"
-            android:textColor="#FFFFFF"/>
+            android:background="@drawable/button_green_gradient"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-medium"
+            android:elevation="6dp"/>
     </LinearLayout>
+
 </LinearLayout>

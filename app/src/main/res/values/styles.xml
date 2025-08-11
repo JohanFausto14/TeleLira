@@ -1,0 +1,7 @@
+<resources>
+    <style name="Widget.App.Button" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/btn_orange_selector</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>

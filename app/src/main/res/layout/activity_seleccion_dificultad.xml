@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#000000"
+    android:background="@color/background_game"
     android:padding="24dp">
 
     <TextView
@@ -13,30 +13,39 @@
         android:layout_height="wrap_content"
         android:text="¡Bienvenido a Letras Mágicas!"
         android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="24dp"/>
+        android:textColor="@color/text_dark"
+        android:layout_marginBottom="32dp" />
 
     <Button
         android:id="@+id/btnFacil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
         android:text="Fácil"
         android:textSize="20sp"
-        android:layout_marginBottom="16dp"/>
+        android:background="@drawable/btn_orange_selector"
+        android:backgroundTint="@null"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btnMedio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
         android:text="Medio"
         android:textSize="20sp"
-        android:layout_marginBottom="16dp"/>
+        android:background="@drawable/btn_orange_selector"
+        android:backgroundTint="@null"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btnDificil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
         android:text="Difícil"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:background="@drawable/btn_orange_selector"
+        android:backgroundTint="@null"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

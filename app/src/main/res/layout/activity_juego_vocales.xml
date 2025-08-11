@@ -1,64 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:padding="24dp">
+    android:background="@color/background_game"
+    android:padding="16dp">
 
+    <!-- Encabezado con puntos -->
+    <TextView
+        android:id="@+id/txtPuntos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Puntos: 0"
+        android:textColor="@color/text_dark"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Contenido principal del juego -->
     <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/txtPuntos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="⭐ Puntos: 0"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_marginBottom="12dp"/>
-
+        <!-- Emoji -->
         <TextView
             android:id="@+id/imgEmoji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🦓"
-            android:textSize="64sp"
-            android:layout_marginBottom="12dp"/>
+            android:textSize="72sp"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Nombre (solo visible en dificultad difícil) -->
         <TextView
             android:id="@+id/txtNombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_dark"
             android:textSize="20sp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="24dp" />
 
+        <!-- Pregunta -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿Con qué vocal empieza?"
+            android:textColor="@color/text_dark"
+            android:textSize="18sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Opciones de respuesta (2x2 grid) -->
         <LinearLayout
             android:id="@+id/layoutOpciones"
             android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center" />
 
+        <!-- Feedback (ahora siempre debajo de las opciones) -->
         <TextView
             android:id="@+id/txtFeedback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textColor="#FFEB3B"
-            android:textSize="24sp"
-            android:layout_marginTop="24dp"
-            android:visibility="gone"/>
+            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="invisible" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/btnVolver"
+    <!-- Pantalla final -->
+    <LinearLayout
+        android:id="@+id/layoutFinal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txtTituloFinal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="# Juego Completado!"
+            android:textColor="@color/text_dark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/txtPuntuacionFinal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Puntuación: 0 puntos"
+            android:textColor="@color/text_dark"
+            android:textSize="20sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/txtMensajeFinal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/text_dark"
+            android:textSize="18sp"
+            android:layout_marginBottom="32dp" />
+
+        <Button
+            android:id="@+id/btnJugarNuevo"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Jugar otra vez"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnCambiarDificultad"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Cambiar dificultad"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnVolverInicio"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
             android:text="Volver al inicio"
-            android:visibility="gone"
-            android:layout_marginTop="24dp"/>
+            android:textAllCaps="false"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
-</ScrollView>
+</RelativeLayout>

@@ -1,222 +1,317 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/gradient_background"
-    android:padding="16dp">
+    android:background="@drawable/gradient_background">
 
-    <!-- Header con perfil -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:id="@+id/profileMenu"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/profile_background"
+        android:elevation="16dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <ImageView
+
+    <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/lira"
-            android:scaleType="centerCrop"/>
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/circle_border_large"
+            android:contentDescription="Foto de perfil"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lira" />
 
         <TextView
             android:id="@+id/userName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:shadowColor="#000000"
+            android:shadowRadius="4"
+            android:text="Juanito Pérez"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/userEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="juanito@ejemplo.com"
+            android:textColor="#BBFFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/userPoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:text="⭐ 1,250 Puntos"
+            android:textColor="#FFD700"
             android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="#40FFFFFF" />
+
     </LinearLayout>
 
-    <!-- Título -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="¡Elige tu juego favorito!"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        android:textStyle="bold"/>
-
-    <!-- Grid de juegos simple -->
     <GridLayout
+        android:id="@+id/gamesGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toRightOf="@id/profileMenu"
         android:columnCount="2"
+        android:padding="20dp"
+        android:paddingBottom="40dp"
         android:rowCount="3"
         android:alignmentMode="alignMargins"
         android:columnOrderPreserved="false"
-        android:layout_marginTop="16dp">
+        android:useDefaultMargins="true">
 
-        <!-- Juego 1 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/game1"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_gravity="fill"
             android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="12dp"
+            app:strokeColor="#40000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="#F2FFFFFF"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="#A7D7C5"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/lira"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="100dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/letras" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#80000000"
                     android:text="Letras Mágicas"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:padding="8dp"/>
-            </RelativeLayout>
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Juego 2 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/game2"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_gravity="fill"
             android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="12dp"
+            app:strokeColor="#40000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="#F2FFFFFF"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="#FFD1B3"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/lira"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="100dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/rompe" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#80000000"
-                    android:text="Palabras Voladoras"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:padding="8dp"/>
-            </RelativeLayout>
+                    android:text="Formar Palabras"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Juego 3 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/game3"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_gravity="fill"
             android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="12dp"
+            app:strokeColor="#40000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="#F2FFFFFF"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="#D6CDEA"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/lira"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="100dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/cuento" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#80000000"
-                    android:text="Cuentos Animados"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:padding="8dp"/>
-            </RelativeLayout>
+                    android:text="Cuentos Divertidos"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Juego 4 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/game4"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_gravity="fill"
             android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="12dp"
+            app:strokeColor="#40000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="#F2FFFFFF"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="#FFF9C4"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/lira"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="100dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/trofeo" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#80000000"
-                    android:text="Abecedario Musical"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:padding="8dp"/>
-            </RelativeLayout>
+                    android:text="Desafíos Lira"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Juego 5 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/game5"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_margin="8dp"
+            android:layout_height="150dp"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:layout_gravity="fill_horizontal"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="12dp"
+            app:strokeColor="#40000000"
+            app:strokeWidth="2dp"
+            app:cardBackgroundColor="#F2FFFFFF"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="#E7D6F1"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/lira"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="100dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/campana" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#80000000"
-                    android:text="Rimas Divertidas"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:padding="8dp"/>
-            </RelativeLayout>
+                    android:text="Póximamente"
+                    android:textSize="18sp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
     </GridLayout>
-</LinearLayout>
+
+</RelativeLayout>

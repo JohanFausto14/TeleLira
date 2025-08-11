@@ -1,72 +1,157 @@
 package com.example.liratele
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 
 class MainMenuActivity : AppCompatActivity() {
+
+    private val client = OkHttpClient()
+    private val TAG = "MainMenuActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
 
-        // Configuración básica
         val profileImage = findViewById<ImageView>(R.id.profileImage)
         val userName = findViewById<TextView>(R.id.userName)
-        val nombre = intent.getStringExtra("nombre") ?: "Usuario"
+        val userEmail = findViewById<TextView>(R.id.userEmail)
+        val userPoints = findViewById<TextView>(R.id.userPoints)
+
+        val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+        val parentId = prefs.getString("parentId", "No guardado")
+        val idUsuario = prefs.getString("idUsuario", "No guardado")
+        val correo = prefs.getString("correo", "No guardado")
+        val role = prefs.getString("role", "No guardado")
+        val nombre = prefs.getString("nombre", "No guardado")
+        val idNino = prefs.getString("idNino", null) // Este es el ID que usarás para llamar API
+        val token = prefs.getString("token", "No guardado")
+
+        Log.d(TAG, "parentId: $parentId")
+        Log.d(TAG, "idUsuario: $idUsuario")
+        Log.d(TAG, "correo: $correo")
+        Log.d(TAG, "role: $role")
+        Log.d(TAG, "nombre: $nombre")
+        Log.d(TAG, "idNino: $idNino")
+        Log.d(TAG, "token: $token")
 
         profileImage.setImageResource(R.drawable.lira)
         userName.text = nombre
+        userEmail.text = correo
 
-        // Cards de juego
-        val game1 = findViewById<MaterialCardView>(R.id.game1)
-        val game2 = findViewById<MaterialCardView>(R.id.game2)
-        val game3 = findViewById<MaterialCardView>(R.id.game3)
-        val game4 = findViewById<MaterialCardView>(R.id.game4)
-        val game5 = findViewById<MaterialCardView>(R.id.game5)
+        if (idNino != null) {
+            obtenerProgreso(idNino, profileImage, userPoints)
+        }
 
-        // Colores personalizados
-        val colors = listOf(
-            Color.parseColor("#FFA500"),  // Orange
-            Color.parseColor("#800080"),  // Purple
-            Color.parseColor("#FFC0CB"),  // Pink
-            Color.parseColor("#0000FF"),  // Blue
-            Color.parseColor("#008000")   // Green
+        val gameCards = listOf(
+            findViewById<MaterialCardView>(R.id.game1),
+            findViewById<MaterialCardView>(R.id.game2),
+            findViewById<MaterialCardView>(R.id.game3),
+            findViewById<MaterialCardView>(R.id.game4),
+            findViewById<MaterialCardView>(R.id.game5)
         )
 
-        val gameCards = listOf(game1, game2, game3, game4, game5)
+        val colors = listOf(
+            Color.parseColor("#FFA500"),
+            Color.parseColor("#800080"),
+            Color.parseColor("#FFC0CB"),
+            Color.parseColor("#0000FF"),
+            Color.parseColor("#008000")
+        )
 
-        // Cargar animación de flotación
-        val floatAnim = AnimationUtils.loadAnimation(this, R.anim.animacion)
-
-        gameCards.forEachIndexed { index, card ->
-            card.setCardBackgroundColor(colors[index])
-            card.startAnimation(floatAnim) // Aplicar animación de flotación
+        val anim = AnimationUtils.loadAnimation(this, R.anim.animacion)
+        gameCards.forEachIndexed { i, card ->
+            card.setCardBackgroundColor(colors[i])
+            card.startAnimation(anim)
         }
 
-        // Navegación a cada actividad
-        game1.setOnClickListener {
+        gameCards[0].setOnClickListener {
             startActivity(Intent(this, SeleccionDificultadActivity::class.java))
         }
-
-        game2.setOnClickListener {
+        gameCards[1].setOnClickListener {
             startActivity(Intent(this, FormarPalabrasActivity::class.java))
         }
-
-        game3.setOnClickListener {
+        gameCards[2].setOnClickListener {
             startActivity(Intent(this, CuentosDivertidosActivity::class.java))
         }
-
-        game4.setOnClickListener {
+        gameCards[3].setOnClickListener {
             startActivity(Intent(this, DesafiosLiraActivity::class.java))
         }
-
-        game5.setOnClickListener {
+        gameCards[4].setOnClickListener {
             startActivity(Intent(this, ProximamenteActivity::class.java))
+        }
+    }
+
+    private fun obtenerProgreso(idNino: String, profileImage: ImageView, userPoints: TextView) {
+        val url = "https://api-lira.onrender.com/api/child-pro/$idNino"
+        Log.d(TAG, "Llamando a la API: $url")
+
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e(TAG, "Error al conectar con la API: ${e.message}")
+                runOnUiThread {
+                    Toast.makeText(this@MainMenuActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+                Log.d(TAG, "Respuesta recibida: $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    val json = JSONObject(responseBody)
+                    val totalPoints = json.getInt("totalPoints")
+                    val avatarUrl = json.getString("avatar")
+
+                    Log.d(TAG, "Puntos totales: $totalPoints")
+                    Log.d(TAG, "URL del avatar: $avatarUrl")
+
+                    runOnUiThread {
+                        userPoints.text = "Puntos: $totalPoints"
+                        if (avatarUrl.isNotEmpty()) {
+                            DownloadImageTask(profileImage).execute(avatarUrl)
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "Respuesta no exitosa: ${response.code}")
+                }
+            }
+        })
+    }
+
+    private class DownloadImageTask(private val imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            val url = urls[0]
+            return try {
+                val input: InputStream = URL(url).openStream()
+                BitmapFactory.decodeStream(input)
+            } catch (e: Exception) {
+                Log.e("DownloadImageTask", "Error descargando imagen: ${e.message}")
+                null
+            }
+        }
+
+        override fun onPostExecute(result: Bitmap?) {
+            result?.let {
+                imageView.setImageBitmap(it)
+            }
         }
     }
 }
