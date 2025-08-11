@@ -39,7 +39,7 @@ class MainMenuActivity : AppCompatActivity() {
         val correo = prefs.getString("correo", "No guardado")
         val role = prefs.getString("role", "No guardado")
         val nombre = prefs.getString("nombre", "No guardado")
-        val idNino = prefs.getString("idNino", null) // Este es el ID que usarás para llamar API
+        val idNino = prefs.getString("idNino", null)
         val token = prefs.getString("token", "No guardado")
 
         Log.d(TAG, "parentId: $parentId")
@@ -80,24 +80,33 @@ class MainMenuActivity : AppCompatActivity() {
             card.startAnimation(anim)
         }
 
+        // Aquí asignamos el juego correcto con su etiqueta "juego" para pasar a la dificultad
+
         gameCards[0].setOnClickListener {
-            startActivity(Intent(this, SeleccionDificultadActivity::class.java))
+            val intent = Intent(this, SeleccionDificultadActivity::class.java)
+            intent.putExtra("juego", "vocales")
+            startActivity(intent)
         }
         gameCards[1].setOnClickListener {
-            startActivity(Intent(this, FormarPalabrasActivity::class.java))
+            val intent = Intent(this, SeleccionDificultadActivity::class.java)
+            intent.putExtra("juego", "formarpalabras")
+            startActivity(intent)
         }
         gameCards[2].setOnClickListener {
-            startActivity(Intent(this, CuentosDivertidosActivity::class.java))
+            val intent = Intent(this, SeleccionDificultadActivity::class.java)
+            intent.putExtra("juego", "cuentosdivertidos")
+            startActivity(intent)
         }
         gameCards[3].setOnClickListener {
-            startActivity(Intent(this, DesafiosLiraActivity::class.java))
+            val intent = Intent(this, SeleccionDificultadActivity::class.java)
+            intent.putExtra("juego", "desafioslira")
+            startActivity(intent)
         }
         gameCards[4].setOnClickListener {
             startActivity(Intent(this, ProximamenteActivity::class.java))
         }
     }
-
-    private fun obtenerProgreso(idNino: String, profileImage: ImageView, userPoints: TextView) {
+        private fun obtenerProgreso(idNino: String, profileImage: ImageView, userPoints: TextView) {
         val url = "https://api-lira.onrender.com/api/child-pro/$idNino"
         Log.d(TAG, "Llamando a la API: $url")
 

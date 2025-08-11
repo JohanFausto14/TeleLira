@@ -7,7 +7,7 @@
     android:background="@color/background_game"
     android:padding="12dp">
 
-    <!-- Contenedor principal: lo cambiamos a RelativeLayout para posicionar indicadores -->
+    <!-- Contenedor principal -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,7 +16,7 @@
         android:padding="12dp"
         android:layout_marginBottom="8dp">
 
-        <!-- Título centrado arriba -->
+        <!-- Título -->
         <TextView
             android:id="@+id/titleText"
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_marginBottom="6dp"
             android:layout_alignParentTop="true"/>
 
-        <!-- Nivel debajo del título -->
+        <!-- Nivel -->
         <TextView
             android:id="@+id/levelText"
             android:layout_width="match_parent"
@@ -41,7 +41,7 @@
             android:layout_below="@id/titleText"
             android:layout_marginBottom="8dp"/>
 
-        <!-- Indicadores en esquina superior derecha, tamaño pequeño -->
+        <!-- Indicadores -->
         <LinearLayout
             android:id="@+id/indicatorsLayout"
             android:layout_width="wrap_content"
@@ -51,6 +51,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true">
 
+            <!-- Puntos -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,6 +79,7 @@
                     android:textSize="11sp"/>
             </LinearLayout>
 
+            <!-- Tiempo -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,6 +107,7 @@
                     android:textSize="11sp"/>
             </LinearLayout>
 
+            <!-- Dificultad -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -133,7 +136,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Imagen centrada debajo -->
+        <!-- Imagen -->
         <ImageView
             android:id="@+id/wordImage"
             android:layout_width="140dp"
@@ -145,6 +148,7 @@
             android:scaleType="centerCrop"
             android:background="@drawable/rounded_bg_orange"/>
 
+        <!-- Pista -->
         <TextView
             android:id="@+id/hintText"
             android:layout_width="match_parent"
@@ -159,6 +163,7 @@
             android:textSize="13sp"
             android:fontFamily="sans-serif-medium"/>
 
+        <!-- Tu palabra -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -169,6 +174,7 @@
             android:layout_below="@id/hintText"
             android:layout_marginBottom="6dp"/>
 
+        <!-- Zona respuesta -->
         <LinearLayout
             android:id="@+id/zonaRespuesta"
             android:layout_width="match_parent"
@@ -178,8 +184,9 @@
             android:background="@color/background_game"
             android:padding="8dp"
             android:layout_below="@id/hintText"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="12dp"/>
 
+        <!-- Texto Letras disponibles -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -188,21 +195,38 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:layout_below="@id/zonaRespuesta"
-            android:layout_marginBottom="6dp"/>
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Letras -->
         <LinearLayout
             android:id="@+id/letrasDesordenadas"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:background="@android:color/white"
-            android:padding="4dp"
+            android:padding="10dp"
             android:layout_below="@id/zonaRespuesta"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:clipToPadding="false">
+
+            <!-- Texto ejemplo para ver tamaño -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:textColor="@color/letterCream"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:background="@drawable/rounded_bg_white"
+                android:layout_margin="6dp"/>
+        </LinearLayout>
     </RelativeLayout>
 
-    <!-- Botones de acción -->
+    <!-- Botones -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -253,5 +277,4 @@
             android:fontFamily="sans-serif-medium"
             android:elevation="6dp"/>
     </LinearLayout>
-
 </LinearLayout>

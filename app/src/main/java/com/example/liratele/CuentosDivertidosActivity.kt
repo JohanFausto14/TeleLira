@@ -106,7 +106,25 @@ class CuentosDivertidosActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.storiesContainer).visibility = View.GONE
         findViewById<LinearLayout>(R.id.questionsContainer).visibility = View.GONE
 
-        findViewById<TextView>(R.id.storyText).text = story.content[currentPage]
+        val storyText = findViewById<TextView>(R.id.storyText)
+        val storyImage = findViewById<ImageView>(R.id.storyImage)
+
+        storyText.text = story.content[currentPage]
+
+        // Asignar imagen según el cuento
+        val imageResId = when (story.title) {
+            "El León y el Ratón" -> R.drawable.cuento
+            "La Tortuga y la Liebre" -> R.drawable.cuento
+            "El Zorro y las Uvas" -> R.drawable.cuento
+            else -> 0
+        }
+
+        if (imageResId != 0) {
+            storyImage.setImageResource(imageResId)
+            storyImage.visibility = View.VISIBLE
+        } else {
+            storyImage.visibility = View.GONE
+        }
 
         findViewById<Button>(R.id.nextButton).apply {
             text = if (currentPage < story.content.size - 1) "Siguiente" else "Preguntas"
@@ -130,7 +148,11 @@ class CuentosDivertidosActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.storyContainer).visibility = View.GONE
         findViewById<LinearLayout>(R.id.storiesContainer).visibility = View.GONE
 
-        findViewById<TextView>(R.id.questionText).text = question.text
+        // Ocultar imagen en preguntas
+        findViewById<ImageView>(R.id.storyImage).visibility = View.GONE
+
+        val questionText = findViewById<TextView>(R.id.questionText)
+        questionText.text = question.text
 
         findViewById<LinearLayout>(R.id.optionsContainer).apply {
             removeAllViews()

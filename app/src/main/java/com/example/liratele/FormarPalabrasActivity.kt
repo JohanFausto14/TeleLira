@@ -83,23 +83,28 @@ class FormarPalabrasActivity : AppCompatActivity() {
         val difficulty: String
     )
 
-    // Para guardar las letras seleccionadas en la zona de respuesta
     private val selectedLetters = mutableListOf<TextView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_formar_palabras)
 
-        dificultadNum = intent.getIntExtra("dificultad", 1)
-        dificultadStr = when (dificultadNum) {
-            1 -> "fácil"
-            2 -> "medio"
-            3 -> "difícil"
-            else -> "fácil"
+        val dificultadEnIntent = intent.getIntExtra("dificultad", -1)
+        if (dificultadEnIntent == -1) {
+            Toast.makeText(this, "No se especificó dificultad. Volviendo al menú.", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        } else {
+            dificultadNum = dificultadEnIntent
+            dificultadStr = when (dificultadNum) {
+                1 -> "fácil"
+                2 -> "medio"
+                3 -> "difícil"
+                else -> "fácil"
+            }
+            setupViews()
+            setupGame()
         }
-
-        setupViews()
-        setupGame()
     }
 
     private fun setupViews() {
@@ -118,8 +123,6 @@ class FormarPalabrasActivity : AppCompatActivity() {
         verificarBtn.setOnClickListener { verificarRespuesta() }
         hintButton.setOnClickListener { toggleHint() }
         resetButton.setOnClickListener { resetGame() }
-
-
     }
 
     private fun setupGame() {
@@ -147,12 +150,10 @@ class FormarPalabrasActivity : AppCompatActivity() {
             .error(R.drawable.ic_placeholder)
             .into(wordImage)
 
-        // Mostrar letras desordenadas como botones clicables
         currentChallenge.letters.shuffled().forEach { letra ->
             letrasDesordenadas.addView(crearLetraView(letra))
         }
 
-        // Crear espacios vacíos para la palabra respuesta
         for (i in currentChallenge.word.indices) {
             zonaRespuesta.addView(crearEspacioDestino())
         }
@@ -180,6 +181,7 @@ class FormarPalabrasActivity : AppCompatActivity() {
 
                 if (espacioVacio != null) {
                     espacioVacio.text = letra
+                    espacioVacio.setBackgroundResource(R.drawable.slot_bg_filled) // cambio visual al colocar letra
                     selectedLetters.add(espacioVacio)
                     tv.visibility = View.INVISIBLE
                 }
@@ -202,6 +204,7 @@ class FormarPalabrasActivity : AppCompatActivity() {
             if (tv.text.isNotEmpty()) {
                 val letra = tv.text.toString()
                 tv.text = ""
+                tv.setBackgroundResource(R.drawable.slot_bg) // volver a fondo normal
                 // Mostrar la letra correspondiente en letrasDesordenadas
                 for (i in 0 until letrasDesordenadas.childCount) {
                     val letraView = letrasDesordenadas.getChildAt(i) as TextView
@@ -255,6 +258,7 @@ class FormarPalabrasActivity : AppCompatActivity() {
         // Vaciar zonaRespuesta y mostrar todas las letras en letrasDesordenadas
         selectedLetters.forEach {
             it.text = ""
+            it.setBackgroundResource(R.drawable.slot_bg) // restaurar fondo normal
         }
         selectedLetters.clear()
 
