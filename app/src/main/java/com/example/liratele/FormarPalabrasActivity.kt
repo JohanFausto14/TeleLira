@@ -8,9 +8,14 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.Date
 
 class FormarPalabrasActivity : AppCompatActivity() {
 
@@ -174,19 +179,22 @@ class FormarPalabrasActivity : AppCompatActivity() {
 
         tv.setOnClickListener {
             if (tv.visibility == View.VISIBLE) {
-                // Buscar primer espacio vacío en zonaRespuesta
                 val espacioVacio = (0 until zonaRespuesta.childCount)
                     .map { zonaRespuesta.getChildAt(it) as TextView }
                     .firstOrNull { it.text.isEmpty() }
 
                 if (espacioVacio != null) {
                     espacioVacio.text = letra
-                    espacioVacio.setBackgroundResource(R.drawable.slot_bg_filled) // cambio visual al colocar letra
+                    espacioVacio.setBackgroundResource(R.drawable.slot_bg_filled)
+                    espacioVacio.setTextColor(Color.BLACK)
+                    espacioVacio.textSize = 36f
+                    espacioVacio.visibility = View.VISIBLE
                     selectedLetters.add(espacioVacio)
                     tv.visibility = View.INVISIBLE
                 }
             }
         }
+
         return tv
     }
 
@@ -196,7 +204,7 @@ class FormarPalabrasActivity : AppCompatActivity() {
         tv.textSize = 36f
         tv.setPadding(24, 24, 24, 24)
         tv.setBackgroundResource(R.drawable.slot_bg)
-        tv.setTextColor(Color.BLACK)
+        tv.setTextColor(Color.BLACK)  // Aquí defines el color del texto en el espacio destino
         tv.isClickable = true
 
         // Al hacer clic sobre una letra ya colocada, regresa la letra a la zona de letras
@@ -233,10 +241,15 @@ class FormarPalabrasActivity : AppCompatActivity() {
         }
 
         if (userAnswer == currentWord) {
-            // Correcto
-            val basePoints = POINTS_BY_DIFFICULTY[dificultadStr] ?: 50
-            val timeBonus = (timeLeft / 1000) * TIME_BONUS_MULTIPLIER
-            points += (basePoints + timeBonus).toInt()
+            val puntosFijos = when (dificultadStr) {
+                "fácil" -> 50
+                "medio" -> 70
+                "difícil" -> 90
+                else -> 50
+            }
+
+            points += puntosFijos
+
             currentLevel++
             timer?.cancel()
 
@@ -247,12 +260,12 @@ class FormarPalabrasActivity : AppCompatActivity() {
                 setupGame()
             }
         } else {
-            // Incorrecto
             Toast.makeText(this, "Respuesta incorrecta. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
             resetRespuesta()
         }
         updatePointsUI()
     }
+
 
     private fun resetRespuesta() {
         // Vaciar zonaRespuesta y mostrar todas las letras en letrasDesordenadas
@@ -316,14 +329,81 @@ class FormarPalabrasActivity : AppCompatActivity() {
         timer?.start()
     }
 
+
+// Dentro de FormarPalabrasActivity
+
+    private fun guardarProgreso() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+                val childId = prefs.getString("idNino", null)
+                val token = prefs.getString("token", null)
+                val puntosTotalesGuardados = prefs.getInt("puntosTotales", 0)
+
+                // NO sumes aquí puntos acumulados con puntos de la sesión actual,
+                // porque la suma debe hacerse solo UNA VEZ en mostrarResumenFinal().
+
+                // Guardar puntos totales ya actualizados previamente
+                // (Aquí solo envías points de esta sesión)
+                android.util.Log.d("FormarPalabras", "Guardando progreso -> childId: $childId, token: $token, puntos de sesión: $points, total acumulado: $puntosTotalesGuardados")
+
+                if (childId.isNullOrEmpty() || token.isNullOrEmpty()) {
+                    android.util.Log.e("FormarPalabras", "No se pudo guardar: childId o token vacío")
+                    return@launch
+                }
+
+                val json = """
+            {
+                "childId": "$childId",
+                "gameData": {
+                    "gameName": "FormarPalabras",
+                    "points": $points,
+                    "levelsCompleted": $currentLevel,
+                    "highestDifficulty": "$dificultadStr",
+                    "lastPlayed": "${Date()}"
+                },
+                "totalPoints": $puntosTotalesGuardados
+            }
+            """.trimIndent()
+
+                android.util.Log.d("FormarPalabras", "JSON enviado: $json")
+
+                val url = URL("${ApiConfig.API_BASE_URL}/child-progress")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.apply {
+                    requestMethod = "POST"
+                    setRequestProperty("Authorization", "Bearer $token")
+                    setRequestProperty("Content-Type", "application/json")
+                    doOutput = true
+                    outputStream.use { os ->
+                        os.write(json.toByteArray())
+                        os.flush()
+                    }
+                }
+
+                android.util.Log.d("FormarPalabras", "Respuesta servidor: ${connection.responseCode} - ${connection.responseMessage}")
+
+            } catch (e: Exception) {
+                android.util.Log.e("FormarPalabras", "Error al guardar progreso", e)
+            }
+        }
+    }
+
     private fun mostrarResumenFinal() {
         timer?.cancel()
 
+        val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+        val puntosTotalesGuardados = prefs.getInt("puntosTotales", 0)
+        val puntosTotalesActualizados = puntosTotalesGuardados + points
+        prefs.edit().putInt("puntosTotales", puntosTotalesActualizados).apply()
+
+        guardarProgreso()
+
         val mensaje = """
-            Juego terminado.
-            Puntos finales: $points
-            Nivel alcanzado: ${currentLevel}
-        """.trimIndent()
+        Juego terminado.
+        Puntos finales: $points
+        Nivel alcanzado: $currentLevel
+    """.trimIndent()
 
         AlertDialog.Builder(this)
             .setTitle("Resumen Final")
@@ -340,6 +420,7 @@ class FormarPalabrasActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
 
     private fun formatTime(millis: Long): String {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)

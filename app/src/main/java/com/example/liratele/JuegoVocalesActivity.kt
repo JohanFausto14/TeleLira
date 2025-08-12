@@ -253,26 +253,35 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun guardarProgreso() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
-                val childId = prefs.getString("id_niño", null)
-                val token = prefs.getString("Token", null)
+                val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+                val childId = prefs.getString("idNino", null)
+                val token = prefs.getString("token", null)
                 val puntosTotales = prefs.getInt("puntosTotales", 0) + puntos
                 prefs.edit().putInt("puntosTotales", puntosTotales).apply()
 
-                if (childId.isNullOrEmpty() || token.isNullOrEmpty()) return@launch
+                // Log para depuración
+                android.util.Log.d("JuegoVocales", "Guardando progreso -> childId: $childId, token: $token, puntos: $puntos, total: $puntosTotales")
+
+                if (childId.isNullOrEmpty() || token.isNullOrEmpty()) {
+                    android.util.Log.e("JuegoVocales", "No se pudo guardar: childId o token vacío")
+                    return@launch
+                }
 
                 val json = """
-                {
-                    "childId": "$childId",
-                    "gameData": {
-                        "gameName": "VocalesJuego",
-                        "points": $puntos,
-                        "difficulty": "${getDifficultyString()}",
-                        "lastPlayed": "${Date()}"
-                    },
-                    "totalPoints": $puntosTotales
-                }
-                """.trimIndent()
+            {
+                "childId": "$childId",
+                "gameData": {
+                    "gameName": "VocalesJuego",
+                    "points": $puntos,
+                    "levelsCompleted": $TOTAL_PREGUNTAS,
+                    "highestDifficulty": "${getDifficultyString()}",
+                    "lastPlayed": "${Date()}"
+                },
+                "totalPoints": $puntosTotales
+            }
+            """.trimIndent()
+
+                android.util.Log.d("JuegoVocales", "JSON enviado: $json")
 
                 val url = URL("${ApiConfig.API_BASE_URL}/child-progress")
                 val connection = url.openConnection() as HttpURLConnection
@@ -286,8 +295,11 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         os.flush()
                     }
                 }
+
+                android.util.Log.d("JuegoVocales", "Respuesta servidor: ${connection.responseCode} - ${connection.responseMessage}")
+
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("JuegoVocales", "Error al guardar progreso", e)
             }
         }
     }
