@@ -3,9 +3,16 @@ package com.example.liratele
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.Date
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CuentosDivertidosActivity : AppCompatActivity() {
 
@@ -53,6 +60,8 @@ class CuentosDivertidosActivity : AppCompatActivity() {
     private var currentPage = 0
     private var currentQuestion = 0
     private var score = 0
+    private var correctAnswers = 0
+    private var questionsAnswered = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,7 +157,7 @@ class CuentosDivertidosActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.nextButton).apply {
             text = if (currentPage < story.content.size - 1) "Siguiente" else "Preguntas"
-            setBackgroundColor(0xFFFF9800.toInt()) // Botón naranja
+            setBackgroundColor(0xFFFF9800.toInt())
             setTextColor(0xFFFFFFFF.toInt())
             setOnClickListener {
                 if (currentPage < story.content.size - 1) {
@@ -169,7 +178,6 @@ class CuentosDivertidosActivity : AppCompatActivity() {
 
         findViewById<LinearLayout>(R.id.storyContainer).visibility = View.GONE
         findViewById<LinearLayout>(R.id.storiesContainer).visibility = View.GONE
-
         findViewById<ImageView>(R.id.storyImage).visibility = View.GONE
 
         val questionText = findViewById<TextView>(R.id.questionText)
@@ -177,11 +185,10 @@ class CuentosDivertidosActivity : AppCompatActivity() {
 
         findViewById<LinearLayout>(R.id.optionsContainer).apply {
             removeAllViews()
-
             question.options.forEach { option ->
                 val button = Button(this@CuentosDivertidosActivity).apply {
                     text = option
-                    setBackgroundColor(0xFFFF9800.toInt()) // Botón naranja
+                    setBackgroundColor(0xFFFF9800.toInt())
                     setTextColor(0xFFFFFFFF.toInt())
                     setOnClickListener {
                         checkAnswer(option, question.correctAnswer, question.points)
@@ -199,15 +206,15 @@ class CuentosDivertidosActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer(selectedAnswer: String, correctAnswer: String, points: Int) {
+        questionsAnswered++
         if (selectedAnswer == correctAnswer) {
+            correctAnswers++
             score += points
             Toast.makeText(this, "¡Correcto! +$points puntos", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Incorrecto", Toast.LENGTH_SHORT).show()
         }
-
         updateScore()
-
         currentQuestion++
         if (currentQuestion < stories[currentStoryIndex].questions.size) {
             showQuestion()
@@ -223,14 +230,57 @@ class CuentosDivertidosActivity : AppCompatActivity() {
         prefs.edit().putInt("puntosTotales", puntosTotalesActualizados).apply()
 
         guardarProgreso()
-
         Handler(Looper.getMainLooper()).postDelayed({
             showStoriesList()
         }, 2000)
     }
 
     private fun guardarProgreso() {
-        Toast.makeText(this, "Puntos guardados: $score", Toast.LENGTH_LONG).show()
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+                val childId = prefs.getString("idNino", null)
+                val token = prefs.getString("token", null)
+                val puntosTotalesGuardados = prefs.getInt("puntosTotales", 0)
+
+                if (childId.isNullOrEmpty() || token.isNullOrEmpty()) {
+                    Log.e("CuentosDivertidos", "No se pudo guardar: childId o token vacío")
+                    return@launch
+                }
+
+                val json = """
+                {
+                    "childId": "$childId",
+                    "gameData": {
+                        "gameName": "CuentosDivertidos",
+                        "points": $score,
+                        "questionsAnswered": $questionsAnswered,
+                        "correctAnswers": $correctAnswers,
+                        "lastPlayed": "${Date()}"
+                    },
+                    "totalPoints": $puntosTotalesGuardados
+                }
+                """.trimIndent()
+
+                Log.d("CuentosDivertidos", "JSON enviado: $json")
+
+                val url = URL("${ApiConfig.API_BASE_URL}/child-progress")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.apply {
+                    requestMethod = "POST"
+                    setRequestProperty("Authorization", "Bearer $token")
+                    setRequestProperty("Content-Type", "application/json")
+                    doOutput = true
+                    outputStream.use { os ->
+                        os.write(json.toByteArray())
+                        os.flush()
+                    }
+                }
+                Log.d("CuentosDivertidos", "Respuesta servidor: ${connection.responseCode} - ${connection.responseMessage}")
+            } catch (e: Exception) {
+                Log.e("CuentosDivertidos", "Error al guardar progreso", e)
+            }
+        }
     }
 
     private fun updateScore() {
@@ -240,6 +290,9 @@ class CuentosDivertidosActivity : AppCompatActivity() {
     private fun resetGameState() {
         currentPage = 0
         currentQuestion = 0
+        score = 0
+        correctAnswers = 0
+        questionsAnswered = 0
     }
 
     data class Story(val title: String, val content: List<String>, val questions: List<Question>)
