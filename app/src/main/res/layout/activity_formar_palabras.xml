@@ -7,14 +7,30 @@
     android:background="@color/background_game"
     android:padding="12dp">
 
-    <!-- Contenedor principal -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6"
-        android:background="@drawable/rounded_bg_white_large"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp">
+        <!-- Contenedor del juego -->
+        <RelativeLayout
+            android:id="@+id/gameContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_bg_white_large"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Botón de atrás -->
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Atrás"
+                android:textStyle="bold"
+                android:backgroundTint="#FF9800"
+                android:textColor="#FFFFFF"
+                android:paddingHorizontal="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:elevation="4dp"/>
 
         <!-- Título -->
         <TextView
@@ -27,19 +43,11 @@
             android:gravity="center"
             android:textColor="@color/colorAccent"
             android:layout_marginBottom="6dp"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="60dp"/>
 
-        <!-- Nivel -->
-        <TextView
-            android:id="@+id/levelText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nivel 1"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:textColor="@color/colorPrimary"
-            android:layout_below="@id/titleText"
-            android:layout_marginBottom="8dp"/>
+
 
         <!-- Indicadores -->
         <LinearLayout
@@ -49,7 +57,8 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp">
 
             <!-- Puntos -->
             <LinearLayout
@@ -142,7 +151,7 @@
             android:layout_width="140dp"
             android:layout_height="140dp"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/levelText"
+            android:layout_below="@id/titleText"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
@@ -165,6 +174,7 @@
 
         <!-- Tu palabra -->
         <TextView
+            android:id="@+id/tuPalabraText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tu palabra:"
@@ -178,16 +188,18 @@
         <LinearLayout
             android:id="@+id/zonaRespuesta"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:background="@color/background_game"
-            android:padding="8dp"
+            android:padding="6dp"
             android:layout_below="@id/hintText"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="8dp"
+            android:minHeight="35dp"/>
 
         <!-- Texto Letras disponibles -->
         <TextView
+            android:id="@+id/letrasDisponiblesText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Letras disponibles:"
@@ -195,7 +207,7 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:layout_below="@id/zonaRespuesta"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="6dp"/>
 
         <!-- Letras -->
         <LinearLayout
@@ -208,7 +220,7 @@
             android:padding="10dp"
             android:layout_below="@id/zonaRespuesta"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:clipToPadding="false">
 
             <!-- Texto ejemplo para ver tamaño -->
@@ -224,57 +236,129 @@
                 android:background="@drawable/rounded_bg_white"
                 android:layout_margin="6dp"/>
         </LinearLayout>
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <!-- Botones -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="8dp"
-        android:weightSum="3"
-        android:paddingHorizontal="12dp">
+        <!-- Pantalla final -->
+        <LinearLayout
+            android:id="@+id/layoutFinal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="24dp"
+            android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txtTituloFinal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="# Juego Completado!"
+            android:textColor="@color/text_dark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/txtPuntuacionFinal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Puntuación: 0 puntos"
+            android:textColor="@color/text_dark"
+            android:textSize="20sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/txtMensajeFinal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/text_dark"
+            android:textSize="18sp"
+            android:layout_marginBottom="32dp" />
 
         <Button
-            android:id="@+id/resetButton"
-            android:layout_width="0dp"
-            android:layout_height="42dp"
-            android:layout_weight="1"
-            android:text="Reiniciar"
-            android:background="@drawable/button_orange_gradient"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:layout_marginEnd="8dp"
-            android:textSize="13sp"
-            android:fontFamily="sans-serif-medium"
-            android:elevation="4dp"/>
+            android:id="@+id/btnJugarNuevo"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Jugar otra vez"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:id="@+id/hintButton"
-            android:layout_width="0dp"
-            android:layout_height="42dp"
-            android:layout_weight="1"
-            android:text="Pista (-20 pts)"
-            android:background="@drawable/button_orange_gradient"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="13sp"
-            android:fontFamily="sans-serif-medium"
-            android:elevation="4dp"
-            android:layout_marginEnd="8dp"/>
+            android:id="@+id/btnCambiarDificultad"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Cambiar dificultad"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:id="@+id/verificarBtn"
-            android:layout_width="0dp"
-            android:layout_height="42dp"
-            android:layout_weight="1"
-            android:text="Verificar"
-            android:background="@drawable/button_green_gradient"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:fontFamily="sans-serif-medium"
-            android:elevation="6dp"/>
+            android:id="@+id/btnVolverInicio"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Volver al inicio"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:weightSum="3"
+            android:paddingHorizontal="12dp">
+
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:layout_weight="1"
+                android:text="Reiniciar"
+                android:background="@drawable/button_orange_gradient"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-medium"
+                android:elevation="4dp"/>
+
+            <Button
+                android:id="@+id/hintButton"
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:layout_weight="1"
+                android:text="Pista (-20 pts)"
+                android:background="@drawable/button_orange_gradient"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-medium"
+                android:elevation="4dp"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/verificarBtn"
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:layout_weight="1"
+                android:text="Verificar"
+                android:background="@drawable/button_green_gradient"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:elevation="6dp"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>

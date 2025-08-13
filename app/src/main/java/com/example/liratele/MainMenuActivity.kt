@@ -93,13 +93,12 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
         gameCards[2].setOnClickListener {
-            val intent = Intent(this, SeleccionDificultadActivity::class.java)
-            intent.putExtra("juego", "cuentosdivertidos")
+            val intent = Intent(this, CuentosDivertidosActivity::class.java)
             startActivity(intent)
         }
+
         gameCards[3].setOnClickListener {
-            val intent = Intent(this, SeleccionDificultadActivity::class.java)
-            intent.putExtra("juego", "desafioslira")
+            val intent = Intent(this, DesafiosLiraActivity::class.java)
             startActivity(intent)
         }
         gameCards[4].setOnClickListener {

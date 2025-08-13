@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     android:background="#FFF8E1">
 
-    <!-- Barra superior -->
+    <!-- Barra superior fija -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:padding="16dp"
+        android:background="#FFF8E1"
+        android:elevation="4dp">
 
         <Button
             android:id="@+id/backButton"
@@ -37,109 +39,111 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- Lista de cuentos -->
-    <ScrollView
+    <!-- Contenedor principal para contenido que cambia -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <LinearLayout
-            android:id="@+id/storiesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"/>
-    </ScrollView>
-
-    <!-- Vista del cuento -->
-    <LinearLayout
-        android:id="@+id/storyContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="#FFFFFF"
-        android:padding="12dp"
-        android:elevation="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
-
-        <!-- Imagen fuera del contenedor del texto -->
-        <ImageView
-            android:id="@+id/storyImage"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="fitCenter"
-            android:contentDescription="Imagen del cuento"
-            android:layout_marginBottom="12dp"
-            android:visibility="gone" />
-
-        <!-- Contenedor exclusivo para el texto del cuento -->
+        <!-- Lista de cuentos -->
         <ScrollView
+            android:id="@+id/storiesScrollView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/storyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="#424242"
-                android:lineSpacingExtra="6dp"
-                android:padding="8dp"/>
-        </ScrollView>
-
-        <Button
-            android:id="@+id/nextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Siguiente"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
-    </LinearLayout>
-
-    <!-- Contenedor de preguntas sin imagen -->
-    <LinearLayout
-        android:id="@+id/questionsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="#FFFFFF"
-        android:padding="12dp"
-        android:elevation="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="26dp">
-
-        <TextView
-            android:id="@+id/questionText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="#3F51B5"
-            android:padding="8dp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true">
+            android:layout_height="match_parent"
+            android:background="#FFF8E1"
+            android:visibility="visible"
+            android:padding="16dp">
 
             <LinearLayout
-                android:id="@+id/optionsContainer"
+                android:id="@+id/storiesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginBottom="20dp" />
+                android:gravity="center_horizontal" />
         </ScrollView>
-    </LinearLayout>
+
+        <!-- Vista del cuento -->
+        <LinearLayout
+            android:id="@+id/storyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:background="#FFFFFF"
+            android:elevation="6dp"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/storyImage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:contentDescription="Imagen del cuento"
+                android:visibility="gone" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingTop="12dp">
+
+                <TextView
+                    android:id="@+id/storyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="#424242"
+                    android:lineSpacingExtra="6dp"
+                    android:padding="8dp" />
+            </ScrollView>
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Siguiente"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+        <!-- Contenedor de preguntas -->
+        <LinearLayout
+            android:id="@+id/questionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:background="#FFFFFF"
+            android:elevation="6dp"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/questionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="#3F51B5"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:id="@+id/optionsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center" />
+            </ScrollView>
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

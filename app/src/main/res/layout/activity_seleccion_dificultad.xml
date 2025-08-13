@@ -1,51 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutDificultad"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="@color/background_game"
     android:padding="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Selecciona la dificultad"
-        android:textSize="24sp"
-        android:textColor="@color/text_dark"
-        android:layout_marginBottom="32dp" />
-
+    <!-- Botón Atrás esquina superior izquierda -->
     <Button
-        android:id="@+id/btnFacil"
-        android:layout_width="240dp"
-        android:layout_height="56dp"
-        android:text="Fácil"
-        android:textSize="20sp"
+        android:id="@+id/btnAtras"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Atrás"
+        android:textSize="16sp"
         android:background="@drawable/btn_orange_selector"
         android:backgroundTint="@null"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
-    <Button
-        android:id="@+id/btnMedio"
-        android:layout_width="240dp"
-        android:layout_height="56dp"
-        android:text="Medio"
-        android:textSize="20sp"
-        android:background="@drawable/btn_orange_selector"
-        android:backgroundTint="@null"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp" />
+    <!-- Contenido centrado -->
+    <LinearLayout
+        android:id="@+id/contenedorCentral"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@id/btnAtras"
+        android:layout_marginTop="16dp">
 
-    <Button
-        android:id="@+id/btnDificil"
-        android:layout_width="240dp"
-        android:layout_height="56dp"
-        android:text="Difícil"
-        android:textSize="20sp"
-        android:background="@drawable/btn_orange_selector"
-        android:backgroundTint="@null"
-        android:textColor="#FFFFFF" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selecciona la dificultad"
+            android:textSize="24sp"
+            android:textColor="@color/text_dark"
+            android:layout_marginBottom="32dp" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btnFacil"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Fácil"
+            android:textSize="20sp"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnMedio"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Medio"
+            android:textSize="20sp"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnDificil"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:text="Difícil"
+            android:textSize="20sp"
+            android:background="@drawable/btn_orange_selector"
+            android:backgroundTint="@null"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="32dp" />
+    </LinearLayout>
+
+</RelativeLayout>

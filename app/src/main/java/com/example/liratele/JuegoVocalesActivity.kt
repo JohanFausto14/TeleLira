@@ -41,14 +41,14 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         Item("Elefante", "🐘", "E"),
         Item("Iguana", "🦎", "I"),
         Item("Oso", "🐻", "O"),
-        Item("Avión", "✈", "A")
+        Item("Avión", "✈️", "A")
     )
 
     private val itemsMedio = listOf(
-        Item("Armadillo", "🦫", "A"),
+        Item("Castor", "🦫", "C"),
         Item("Erizo", "🦔", "E"),
-        Item("Impala", "🦌", "I"),
-        Item("Ornitorrinco", "🦫", "O"),
+        Item("Venado", "🦌", "V"),
+        Item("Pingüino", "🐧", "P"),
         Item("Unicornio", "🦄", "U")
     )
 
@@ -56,8 +56,9 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         Item("Aguacate", "🥑", "A"),
         Item("Escorpión", "🦂", "E"),
         Item("Instrumento", "🎺", "I"),
-        Item("Obelisco", "🏛", "O"),
-        Item("Urogallo", "🐦", "U")
+        Item("Obelisco", "🏛️", "O"),
+        Item("Jaguar", "🐆", "J")
+
     )
 
     private var dificultad = 1
@@ -103,15 +104,26 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         preguntaActual = 0
         itemsUsados.clear()
         layoutFinal.visibility = View.GONE
+        
+        // Mostrar TODOS los elementos del juego
         txtPuntos.visibility = View.VISIBLE
         imgEmoji.visibility = View.VISIBLE
         layoutOpciones.visibility = View.VISIBLE
         txtFeedback.visibility = View.INVISIBLE
+        txtNombre.visibility = View.VISIBLE
+        
+        // Mostrar el contenedor principal del juego si existe
+        val gameContainer = findViewById<LinearLayout>(R.id.gameContainer)
+        if (gameContainer != null) {
+            gameContainer.visibility = View.VISIBLE
+        }
+        
         mostrarPreguntaInicial()
     }
 
     private fun cambiarDificultad() {
         val intent = Intent(this, SeleccionDificultadActivity::class.java)
+        intent.putExtra("juego", "vocales")
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
         finish()
@@ -153,7 +165,7 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         itemActual = item
         itemsUsados.add(itemActual.nombre)
         imgEmoji.text = itemActual.emoji
-        txtNombre.text = if (dificultad == 3) itemActual.nombre else ""
+        txtNombre.text = "" // Nunca mostrar el nombre, solo el emoji
         tts.speak(itemActual.nombre, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
@@ -314,10 +326,19 @@ class JuegoVocalesActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun mostrarFin() {
         runOnUiThread {
+            // Ocultar TODOS los elementos del juego
             txtPuntos.visibility = View.GONE
             imgEmoji.visibility = View.GONE
             layoutOpciones.visibility = View.GONE
             txtFeedback.visibility = View.GONE
+            txtNombre.visibility = View.GONE
+            
+            // Ocultar el contenedor principal del juego si existe
+            val gameContainer = findViewById<LinearLayout>(R.id.gameContainer)
+            if (gameContainer != null) {
+                gameContainer.visibility = View.GONE
+            }
+            
             txtTituloFinal.text = "# Juego Completado!"
             txtPuntuacionFinal.text = "Puntuación final: $puntos puntos"
             val porcentajeAciertos = (puntos.toDouble() / (TOTAL_PREGUNTAS * calcularPuntosPorAcierto())) * 100

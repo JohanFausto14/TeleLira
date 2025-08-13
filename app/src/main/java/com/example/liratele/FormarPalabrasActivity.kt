@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -28,7 +29,6 @@ class FormarPalabrasActivity : AppCompatActivity() {
     private lateinit var pointsText: TextView
     private lateinit var timeText: TextView
     private lateinit var difficultyText: TextView
-    private lateinit var levelText: TextView
     private lateinit var wordImage: ImageView
 
     private var showHint = false
@@ -90,27 +90,7 @@ class FormarPalabrasActivity : AppCompatActivity() {
 
     private val selectedLetters = mutableListOf<TextView>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_formar_palabras)
 
-        val dificultadEnIntent = intent.getIntExtra("dificultad", -1)
-        if (dificultadEnIntent == -1) {
-            Toast.makeText(this, "No se especificó dificultad. Volviendo al menú.", Toast.LENGTH_LONG).show()
-            finish()
-            return
-        } else {
-            dificultadNum = dificultadEnIntent
-            dificultadStr = when (dificultadNum) {
-                1 -> "fácil"
-                2 -> "medio"
-                3 -> "difícil"
-                else -> "fácil"
-            }
-            setupViews()
-            setupGame()
-        }
-    }
 
     private fun setupViews() {
         letrasDesordenadas = findViewById(R.id.letrasDesordenadas)
@@ -122,12 +102,19 @@ class FormarPalabrasActivity : AppCompatActivity() {
         pointsText = findViewById(R.id.pointsText)
         timeText = findViewById(R.id.timeText)
         difficultyText = findViewById(R.id.difficultyText)
-        levelText = findViewById(R.id.levelText)
         wordImage = findViewById(R.id.wordImage)
 
         verificarBtn.setOnClickListener { verificarRespuesta() }
         hintButton.setOnClickListener { toggleHint() }
         resetButton.setOnClickListener { resetGame() }
+
+        // Configurar botón de atrás
+        findViewById<Button>(R.id.backButton).setOnClickListener { exitToMenu() }
+
+        // Configurar botones de la pantalla final
+        findViewById<Button>(R.id.btnJugarNuevo).setOnClickListener { reiniciarJuego() }
+        findViewById<Button>(R.id.btnCambiarDificultad).setOnClickListener { cambiarDificultad() }
+        findViewById<Button>(R.id.btnVolverInicio).setOnClickListener { exitToMenu() }
     }
 
     private fun setupGame() {
@@ -136,6 +123,9 @@ class FormarPalabrasActivity : AppCompatActivity() {
         selectedLetters.clear()
         showHint = false
         hintText.visibility = View.GONE
+        
+        // Debug log
+        android.util.Log.d("FormarPalabras", "Setup game iniciado")
 
         val filteredWords = wordChallenges.filter { it.difficulty == dificultadStr }
         if (filteredWords.isEmpty()) {
@@ -145,7 +135,6 @@ class FormarPalabrasActivity : AppCompatActivity() {
         }
         val currentChallenge = filteredWords[currentLevel % filteredWords.size]
 
-        levelText.text = "Nivel ${currentLevel + 1}"
         difficultyText.text = dificultadStr.replaceFirstChar { it.uppercase(Locale.getDefault()) }
         hintText.text = currentChallenge.hint
 
@@ -160,8 +149,18 @@ class FormarPalabrasActivity : AppCompatActivity() {
         }
 
         for (i in currentChallenge.word.indices) {
-            zonaRespuesta.addView(crearEspacioDestino())
+            val slot = crearEspacioDestino()
+            zonaRespuesta.addView(slot)
+            android.util.Log.d("FormarPalabras", "Slot $i creado con ID: ${slot.id}")
         }
+        
+        // Debug log
+        android.util.Log.d("FormarPalabras", "Slots creados: ${zonaRespuesta.childCount}")
+        android.util.Log.d("FormarPalabras", "Zona respuesta height: ${zonaRespuesta.height}")
+
+        // Forzar layout
+        zonaRespuesta.requestLayout()
+        zonaRespuesta.invalidate()
 
         startTimer()
         updatePointsUI()
@@ -170,8 +169,8 @@ class FormarPalabrasActivity : AppCompatActivity() {
     private fun crearLetraView(letra: String): TextView {
         val tv = TextView(this)
         tv.text = letra
-        tv.textSize = 36f
-        tv.setPadding(24, 24, 24, 24)
+        tv.textSize = 28f
+        tv.setPadding(16, 16, 16, 16)
         tv.setBackgroundResource(R.drawable.letter_bg)
         tv.setTextColor(Color.WHITE)
         tv.isClickable = true
@@ -187,10 +186,13 @@ class FormarPalabrasActivity : AppCompatActivity() {
                     espacioVacio.text = letra
                     espacioVacio.setBackgroundResource(R.drawable.slot_bg_filled)
                     espacioVacio.setTextColor(Color.BLACK)
-                    espacioVacio.textSize = 36f
+                    espacioVacio.textSize = 28f  // Mantener tamaño consistente
                     espacioVacio.visibility = View.VISIBLE
                     selectedLetters.add(espacioVacio)
                     tv.visibility = View.INVISIBLE
+                    
+                    // Debug log
+                    android.util.Log.d("FormarPalabras", "Letra colocada: $letra en slot")
                 }
             }
         }
@@ -201,18 +203,27 @@ class FormarPalabrasActivity : AppCompatActivity() {
     private fun crearEspacioDestino(): TextView {
         val tv = TextView(this)
         tv.text = ""
-        tv.textSize = 36f
-        tv.setPadding(24, 24, 24, 24)
+        tv.textSize = 28f
+        tv.setPadding(8, 4, 8, 4)  // Menos padding vertical
         tv.setBackgroundResource(R.drawable.slot_bg)
-        tv.setTextColor(Color.BLACK)  // Aquí defines el color del texto en el espacio destino
+        tv.setTextColor(Color.BLACK)
         tv.isClickable = true
+        
+        // Hacer el slot más compacto horizontalmente
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        layoutParams.setMargins(2, 2, 2, 2)  // Márgenes más pequeños
+        tv.layoutParams = layoutParams
 
         // Al hacer clic sobre una letra ya colocada, regresa la letra a la zona de letras
         tv.setOnClickListener {
             if (tv.text.isNotEmpty()) {
                 val letra = tv.text.toString()
                 tv.text = ""
-                tv.setBackgroundResource(R.drawable.slot_bg) // volver a fondo normal
+                tv.setBackgroundResource(R.drawable.slot_bg)
+                tv.setTextColor(Color.BLACK)
                 // Mostrar la letra correspondiente en letrasDesordenadas
                 for (i in 0 until letrasDesordenadas.childCount) {
                     val letraView = letrasDesordenadas.getChildAt(i) as TextView
@@ -271,7 +282,8 @@ class FormarPalabrasActivity : AppCompatActivity() {
         // Vaciar zonaRespuesta y mostrar todas las letras en letrasDesordenadas
         selectedLetters.forEach {
             it.text = ""
-            it.setBackgroundResource(R.drawable.slot_bg) // restaurar fondo normal
+            it.setBackgroundResource(R.drawable.slot_bg)
+            it.setTextColor(Color.BLACK)
         }
         selectedLetters.clear()
 
@@ -301,11 +313,51 @@ class FormarPalabrasActivity : AppCompatActivity() {
         setupGame()
     }
 
+    private fun reiniciarJuego() {
+        // Ocultar pantalla final
+        findViewById<LinearLayout>(R.id.layoutFinal).visibility = View.GONE
+        
+        // Mostrar TODOS los elementos del juego
+        findViewById<LinearLayout>(R.id.letrasDesordenadas).visibility = View.VISIBLE
+        findViewById<LinearLayout>(R.id.zonaRespuesta).visibility = View.VISIBLE
+        findViewById<Button>(R.id.verificarBtn).visibility = View.VISIBLE
+        findViewById<Button>(R.id.hintButton).visibility = View.VISIBLE
+        findViewById<Button>(R.id.resetButton).visibility = View.VISIBLE
+        findViewById<ImageView>(R.id.wordImage).visibility = View.VISIBLE
+        findViewById<TextView>(R.id.pointsText).visibility = View.VISIBLE
+        findViewById<TextView>(R.id.timeText).visibility = View.VISIBLE
+        findViewById<TextView>(R.id.difficultyText).visibility = View.VISIBLE
+        findViewById<TextView>(R.id.titleText).visibility = View.VISIBLE
+        findViewById<LinearLayout>(R.id.indicatorsLayout).visibility = View.VISIBLE
+        
+        // Mostrar los textos de "Tu palabra:" y "Letras disponibles:"
+        val tuPalabraText = findViewById<TextView>(R.id.tuPalabraText)
+        val letrasDisponiblesText = findViewById<TextView>(R.id.letrasDisponiblesText)
+        if (tuPalabraText != null) tuPalabraText.visibility = View.VISIBLE
+        if (letrasDisponiblesText != null) letrasDisponiblesText.visibility = View.VISIBLE
+        
+        // Mostrar el botón de atrás
+        findViewById<Button>(R.id.backButton).visibility = View.VISIBLE
+        
+        // Mostrar el contenedor principal del juego
+        findViewById<RelativeLayout>(R.id.gameContainer).visibility = View.VISIBLE
+        
+        // Reiniciar juego
+        resetGame()
+    }
+
+    private fun cambiarDificultad() {
+        val intent = Intent(this, SeleccionDificultadActivity::class.java)
+        intent.putExtra("juego", "FormarPalabras")
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+    }
+
     private fun updatePointsUI() {
         pointsText.text = "Puntos: $points"
         timeText.text = "Tiempo: ${formatTime(timeLeft)}"
         difficultyText.text = "Dificultad: ${dificultadStr.replaceFirstChar { it.uppercase(Locale.getDefault()) }}"
-        levelText.text = "Nivel: ${currentLevel + 1}"
     }
 
     private fun startTimer() {
@@ -399,26 +451,89 @@ class FormarPalabrasActivity : AppCompatActivity() {
 
         guardarProgreso()
 
-        val mensaje = """
-        Juego terminado.
-        Puntos finales: $points
-        Nivel alcanzado: $currentLevel
-    """.trimIndent()
+        // Ocultar TODOS los elementos del juego
+        findViewById<LinearLayout>(R.id.letrasDesordenadas).visibility = View.GONE
+        findViewById<LinearLayout>(R.id.zonaRespuesta).visibility = View.GONE
+        findViewById<Button>(R.id.verificarBtn).visibility = View.GONE
+        findViewById<Button>(R.id.hintButton).visibility = View.GONE
+        findViewById<Button>(R.id.resetButton).visibility = View.GONE
+        findViewById<TextView>(R.id.hintText).visibility = View.GONE
+        findViewById<ImageView>(R.id.wordImage).visibility = View.GONE
+        findViewById<TextView>(R.id.pointsText).visibility = View.GONE
+        findViewById<TextView>(R.id.timeText).visibility = View.GONE
+        findViewById<TextView>(R.id.difficultyText).visibility = View.GONE
+        findViewById<TextView>(R.id.titleText).visibility = View.GONE
 
-        AlertDialog.Builder(this)
-            .setTitle("Resumen Final")
-            .setMessage(mensaje)
-            .setPositiveButton("Volver al menú") { _, _ ->
-                exitToMenu()
-            }
-            .setCancelable(false)
-            .show()
+        // Ocultar el contenedor de indicadores
+        findViewById<LinearLayout>(R.id.indicatorsLayout).visibility = View.GONE
+        
+        // Ocultar el botón de atrás
+        findViewById<Button>(R.id.backButton).visibility = View.GONE
+        
+        // Ocultar el contenedor principal del juego (recuadro blanco)
+        findViewById<RelativeLayout>(R.id.gameContainer).visibility = View.GONE
+        
+        // Ocultar el texto "Tu palabra:" y "Letras disponibles:"
+        val tuPalabraText = findViewById<TextView>(R.id.tuPalabraText)
+        val letrasDisponiblesText = findViewById<TextView>(R.id.letrasDisponiblesText)
+        if (tuPalabraText != null) tuPalabraText.visibility = View.GONE
+        if (letrasDisponiblesText != null) letrasDisponiblesText.visibility = View.GONE
+
+        // Mostrar pantalla final
+        val layoutFinal = findViewById<LinearLayout>(R.id.layoutFinal)
+        val txtTituloFinal = findViewById<TextView>(R.id.txtTituloFinal)
+        val txtPuntuacionFinal = findViewById<TextView>(R.id.txtPuntuacionFinal)
+        val txtMensajeFinal = findViewById<TextView>(R.id.txtMensajeFinal)
+
+        txtTituloFinal.text = "# Juego Completado!"
+        txtPuntuacionFinal.text = "Puntuación final: $points puntos"
+        
+        val porcentajeAciertos = if (currentLevel > 0) (points.toDouble() / (currentLevel * 50)) * 100 else 0.0
+        txtMensajeFinal.text = when {
+            porcentajeAciertos >= 100.0 -> "¡Perfecto! 🎉"
+            porcentajeAciertos >= 80.0 -> "¡Excelente trabajo! 👍"
+            porcentajeAciertos >= 50.0 -> "¡Buen intento! 😊"
+            else -> "¡Sigue practicando! 💪"
+        }
+
+        layoutFinal.visibility = View.VISIBLE
     }
 
     private fun exitToMenu() {
-        val intent = Intent(this, SeleccionDificultadActivity::class.java)
+        val intent = Intent(this, MainMenuActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_formar_palabras)
+
+        // Configurar el callback para el botón de atrás
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent(this@FormarPalabrasActivity, MainMenuActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        })
+
+        val dificultadEnIntent = intent.getIntExtra("dificultad", -1)
+        if (dificultadEnIntent == -1) {
+            Toast.makeText(this, "No se especificó dificultad. Volviendo al menú.", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        } else {
+            dificultadNum = dificultadEnIntent
+            dificultadStr = when (dificultadNum) {
+                1 -> "fácil"
+                2 -> "medio"
+                3 -> "difícil"
+                else -> "fácil"
+            }
+            setupViews()
+            setupGame()
+        }
     }
 
 

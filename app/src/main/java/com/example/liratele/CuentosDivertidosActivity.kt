@@ -9,42 +9,42 @@ import androidx.appcompat.app.AppCompatActivity
 
 class CuentosDivertidosActivity : AppCompatActivity() {
 
-    // Datos completos de los cuentos
+    // Datos completos de los cuentos con redacción mejorada
     private val stories = listOf(
         Story(
             "El León y el Ratón",
             listOf(
-                "Un león dormía cuando un ratón lo despertó corriendo sobre él.",
-                "El león atrapó al ratón pero lo dejó ir cuando prometió ayudarlo.",
-                "Días después, el ratón salvó al león royendo las cuerdas de una red."
+                "Un león descansaba plácidamente bajo la sombra de un árbol, cuando un ratón travieso comenzó a corretear sobre él y lo despertó.",
+                "El león, molesto, atrapó al ratón entre sus garras, pero decidió perdonarlo tras la promesa de que algún día le devolvería el favor.",
+                "Tiempo después, el león quedó atrapado en una red. El ratón, recordando su promesa, roía las cuerdas hasta liberarlo."
             ),
             listOf(
-                Question("¿Quién despertó al león?", listOf("Elefante", "Ratón", "Pájaro"), "Ratón", 10),
-                Question("¿Cómo ayudó el ratón?", listOf("Royó redes", "Llamó ayuda", "Trajo agua"), "Royó redes", 15)
+                Question("¿Quién despertó al león?", listOf("Un ratón", "Un elefante", "Un pájaro"), "Un ratón", 10),
+                Question("¿Cómo ayudó el ratón al león?", listOf("Rompió las cuerdas con sus dientes", "Pidió ayuda a otros animales", "Le dio agua"), "Rompió las cuerdas con sus dientes", 15)
             )
         ),
         Story(
             "La Tortuga y la Liebre",
             listOf(
-                "Una liebre veloz se burlaba de una tortuga por su lentitud.",
-                "La tortuga desafió a la liebre a una carrera.",
-                "La liebre, confiada, se durmió y la tortuga ganó."
+                "Una liebre veloz se burlaba constantemente de la lentitud de una tortuga.",
+                "Cansada de las burlas, la tortuga retó a la liebre a una carrera. La liebre aceptó confiada en su rapidez.",
+                "Durante la carrera, la liebre decidió descansar y se quedó dormida. La tortuga, con paso firme, llegó a la meta primero."
             ),
             listOf(
-                Question("¿Por qué perdió la liebre?", listOf("Se durmió", "Corrió lento", "Se perdió"), "Se durmió", 10),
-                Question("¿Qué enseñanza deja?", listOf("Constancia", "Velocidad", "Astucia"), "Constancia", 15)
+                Question("¿Por qué perdió la liebre la carrera?", listOf("Se durmió en el camino", "Corrió demasiado lento", "Se perdió en el bosque"), "Se durmió en el camino", 10),
+                Question("¿Qué enseñanza nos deja la historia?", listOf("La constancia vence a la velocidad", "Siempre hay que correr rápido", "Hay que ser astuto"), "La constancia vence a la velocidad", 15)
             )
         ),
         Story(
             "El Zorro y las Uvas",
             listOf(
-                "Un zorro vio uvas colgando altas en una parra.",
-                "Saltó varias veces pero no pudo alcanzarlas.",
-                "Al no conseguirlas, dijo: '¡Están agrias!' y se fue."
+                "Un zorro hambriento vio unas uvas jugosas colgando de una parra muy alta y quiso alcanzarlas.",
+                "Saltó una y otra vez, pero no logró tocarlas. Cansado, decidió rendirse.",
+                "Mientras se alejaba, murmuró que seguramente esas uvas estaban agrias."
             ),
             listOf(
-                Question("¿Por qué no alcanzó las uvas?", listOf("Altas", "Verdes", "Pocas"), "Altas", 10),
-                Question("¿Qué hizo finalmente?", listOf("Se fue", "Intentó más", "Pidió ayuda"), "Se fue", 10)
+                Question("¿Por qué no alcanzó el zorro las uvas?", listOf("Estaban muy altas", "Eran pocas", "Eran verdes"), "Estaban muy altas", 10),
+                Question("¿Qué hizo el zorro al final?", listOf("Se fue diciendo que estaban agrias", "Intentó más veces", "Pidió ayuda"), "Se fue diciendo que estaban agrias", 10)
             )
         )
     )
@@ -85,6 +85,8 @@ class CuentosDivertidosActivity : AppCompatActivity() {
             stories.forEachIndexed { index, story ->
                 val button = Button(this@CuentosDivertidosActivity).apply {
                     text = story.title
+                    setBackgroundColor(0xFFFF9800.toInt()) // Botón naranja
+                    setTextColor(0xFFFFFFFF.toInt())
                     setOnClickListener {
                         currentStoryIndex = index
                         showStory()
@@ -111,23 +113,43 @@ class CuentosDivertidosActivity : AppCompatActivity() {
 
         storyText.text = story.content[currentPage]
 
-        // Asignar imagen según el cuento
-        val imageResId = when (story.title) {
-            "El León y el Ratón" -> R.drawable.cuento
-            "La Tortuga y la Liebre" -> R.drawable.cuento
-            "El Zorro y las Uvas" -> R.drawable.cuento
-            else -> 0
+        val imageName = when (currentStoryIndex) {
+            0 -> when (currentPage) {
+                0 -> "uno"
+                1 -> "dos"
+                2 -> "tres"
+                else -> null
+            }
+            1 -> when (currentPage) {
+                0 -> "cuatro"
+                1 -> "cinco"
+                2 -> "seis"
+                else -> null
+            }
+            2 -> when (currentPage) {
+                0, 1 -> "siete"
+                2 -> "ocho"
+                else -> null
+            }
+            else -> null
         }
 
-        if (imageResId != 0) {
-            storyImage.setImageResource(imageResId)
-            storyImage.visibility = View.VISIBLE
+        if (imageName != null) {
+            val resId = resources.getIdentifier(imageName, "drawable", packageName)
+            if (resId != 0) {
+                storyImage.setImageResource(resId)
+                storyImage.visibility = View.VISIBLE
+            } else {
+                storyImage.visibility = View.GONE
+            }
         } else {
             storyImage.visibility = View.GONE
         }
 
         findViewById<Button>(R.id.nextButton).apply {
             text = if (currentPage < story.content.size - 1) "Siguiente" else "Preguntas"
+            setBackgroundColor(0xFFFF9800.toInt()) // Botón naranja
+            setTextColor(0xFFFFFFFF.toInt())
             setOnClickListener {
                 if (currentPage < story.content.size - 1) {
                     currentPage++
@@ -148,7 +170,6 @@ class CuentosDivertidosActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.storyContainer).visibility = View.GONE
         findViewById<LinearLayout>(R.id.storiesContainer).visibility = View.GONE
 
-        // Ocultar imagen en preguntas
         findViewById<ImageView>(R.id.storyImage).visibility = View.GONE
 
         val questionText = findViewById<TextView>(R.id.questionText)
@@ -160,6 +181,8 @@ class CuentosDivertidosActivity : AppCompatActivity() {
             question.options.forEach { option ->
                 val button = Button(this@CuentosDivertidosActivity).apply {
                     text = option
+                    setBackgroundColor(0xFFFF9800.toInt()) // Botón naranja
+                    setTextColor(0xFFFFFFFF.toInt())
                     setOnClickListener {
                         checkAnswer(option, question.correctAnswer, question.points)
                     }
@@ -189,15 +212,25 @@ class CuentosDivertidosActivity : AppCompatActivity() {
         if (currentQuestion < stories[currentStoryIndex].questions.size) {
             showQuestion()
         } else {
-            showResult()
+            mostrarResumenFinal()
         }
     }
 
-    private fun showResult() {
-        Toast.makeText(this, "Puntuación final: $score puntos", Toast.LENGTH_LONG).show()
+    private fun mostrarResumenFinal() {
+        val prefs = getSharedPreferences("usuario", MODE_PRIVATE)
+        val puntosTotalesGuardados = prefs.getInt("puntosTotales", 0)
+        val puntosTotalesActualizados = puntosTotalesGuardados + score
+        prefs.edit().putInt("puntosTotales", puntosTotalesActualizados).apply()
+
+        guardarProgreso()
+
         Handler(Looper.getMainLooper()).postDelayed({
             showStoriesList()
         }, 2000)
+    }
+
+    private fun guardarProgreso() {
+        Toast.makeText(this, "Puntos guardados: $score", Toast.LENGTH_LONG).show()
     }
 
     private fun updateScore() {

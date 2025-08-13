@@ -10,6 +10,7 @@ class SeleccionDificultadActivity : AppCompatActivity() {
     private lateinit var btnFacil: Button
     private lateinit var btnMedio: Button
     private lateinit var btnDificil: Button
+    private lateinit var btnAtras: Button
 
     private var juego: String? = null
 
@@ -20,12 +21,20 @@ class SeleccionDificultadActivity : AppCompatActivity() {
         btnFacil = findViewById(R.id.btnFacil)
         btnMedio = findViewById(R.id.btnMedio)
         btnDificil = findViewById(R.id.btnDificil)
+        btnAtras = findViewById(R.id.btnAtras)
 
         juego = intent.getStringExtra("juego")
 
         btnFacil.setOnClickListener { lanzarJuegoConDificultad(1) }
         btnMedio.setOnClickListener { lanzarJuegoConDificultad(2) }
         btnDificil.setOnClickListener { lanzarJuegoConDificultad(3) }
+
+        // Acción para volver al menú principal
+        btnAtras.setOnClickListener {
+            val intent = Intent(this, MainMenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun lanzarJuegoConDificultad(dificultad: Int) {
@@ -34,7 +43,7 @@ class SeleccionDificultadActivity : AppCompatActivity() {
             return
         }
 
-        val intent = when (juego) {
+        val intent = when (juego?.lowercase()) {
             "formarpalabras" -> Intent(this, FormarPalabrasActivity::class.java)
             "vocales" -> Intent(this, JuegoVocalesActivity::class.java)
             "cuentosdivertidos" -> Intent(this, CuentosDivertidosActivity::class.java)
@@ -42,7 +51,6 @@ class SeleccionDificultadActivity : AppCompatActivity() {
         }
 
         if (intent == null) {
-            // Juego no soportado, cerrar selector
             finish()
             return
         }
