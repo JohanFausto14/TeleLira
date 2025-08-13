@@ -1,16 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="#000000">
+    android:background="#673AB7">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¡Próximamente más contenido!"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Próximamente!"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#FFF59D"
+            android:shadowColor="#4527A0"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:layout_marginBottom="16dp" />
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/lira"
+            android:contentDescription="Imagen Lira"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Un nuevo juego está por venir"
+            android:textSize="24sp"
+            android:textColor="#FFFDE7"
+            android:textStyle="italic"
+            android:gravity="center" />
+    </LinearLayout>
+</ScrollView>

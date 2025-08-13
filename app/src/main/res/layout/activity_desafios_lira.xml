@@ -1,16 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="#000000">
+    android:background="#FFA500">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¡En construcción!"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desafíos Lira"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#FFF59D"
+            android:shadowColor="#4527A0"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Contenedor de tarjetas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle"
+            android:dividerPadding="24dp">
+
+            <!-- Tarjeta 1: Cuentos -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/bg_card_cuentos"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:elevation="8dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/trofeo"
+                    android:contentDescription="Trofeo Cuentos" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cuentos"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFDE7"
+                    android:layout_marginStart="24dp" />
+            </LinearLayout>
+
+            <!-- Tarjeta 2: Formar palabras -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/bg_card_palabras"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:elevation="8dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/trofeo"
+                    android:contentDescription="Trofeo Formar Palabras" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Formar Palabras"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFDE7"
+                    android:layout_marginStart="24dp" />
+            </LinearLayout>
+
+            <!-- Tarjeta 3: Letras mágicas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/bg_card_letras"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:elevation="8dp"
+                android:gravity="center_vertical"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/trofeo"
+                    android:contentDescription="Trofeo Letras Mágicas" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Letras Mágicas"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFDE7"
+                    android:layout_marginStart="24dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
